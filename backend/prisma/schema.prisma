@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  CONTRIBUTOR
+}
+
+model User {
+  id                 String    @id @default(uuid())
+  email              String    @unique
+  password           String
+  name               String
+  role               Role      @default(CONTRIBUTOR)
+  mustChangePassword Boolean   @default(false)
+  profileImage       String?
+  resetToken         String?
+  resetTokenExpires  DateTime?
+  posts              Post[]    @relation("PostAuthor")
+  validatedPosts     Post[]    @relation("PostValidatedBy")
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+enum PostType {
+  ARTICLE
+  IMAGE
+  VIDEO
+}
+
+enum PostStatus {
+  DRAFT
+  PENDING
+  PUBLISHED
+}
+
+model Post {
+  id              String     @id @default(uuid())
+  title           String
+  slug            String     @unique @default(uuid())
+  content         String?
+  excerpt         String?
+  featuredImage   String?
+  featured        Boolean    @default(false)
+  type            PostType   @default(ARTICLE)
+  status          PostStatus @default(DRAFT)
+  authorId        String
+  author          User       @relation("PostAuthor", fields: [authorId], references: [id])
+  media           Media[]
+  comments        Comment[]
+  categories      Category[]
+  validatedById   String?
+  validatedBy     User?      @relation("PostValidatedBy", fields: [validatedById], references: [id])
+  validatedAt     DateTime?
+  publishedAt     DateTime?
+  seoTitle        String?
+  seoDescription  String?
+  reviewNote      String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+model Media {
+  id        String   @id @default(uuid())
+  url       String
+  type      String   // e.g., 'image/jpeg', 'video/mp4'
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  posts     Post[]
+  createdAt DateTime @default(now())
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorName  String
+  authorEmail String
+  content     String
+  approved    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model Subscriber {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}

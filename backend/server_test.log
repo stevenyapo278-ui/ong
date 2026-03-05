@@ -1,0 +1,17 @@
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at Function.listen (/home/stevenyapo/Documents/ONG/backend/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/home/stevenyapo/Documents/ONG/backend/src/index.ts:36:5)
+    at Module._compile (node:internal/modules/cjs/loader:1706:14)
+    at Module.m._compile (/home/stevenyapo/Documents/ONG/backend/node_modules/ts-node/src/index.ts:1618:23)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1839:10)
+    at Object.require.extensions.<computed> [as .ts] (/home/stevenyapo/Documents/ONG/backend/node_modules/ts-node/src/index.ts:1621:12)
+    at Module.load (node:internal/modules/cjs/loader:1441:32) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
