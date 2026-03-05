@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Clock, Calendar, Share2, Facebook, Twitter, Link as LinkIcon, ChevronRight, Eye } from 'lucide-react';
 import { usePost } from '../hooks/usePost';
 import DOMPurify from 'dompurify';
+import { Helmet } from 'react-helmet-async';
 import { formatPostType } from '../utils/post';
 import { usePostsList } from '../hooks/usePostsList';
 import CommentsSection from '../components/CommentsSection';
@@ -49,11 +50,19 @@ const PostDetail = () => {
 
   const sanitizedContent = useMemo(() => {
     if (!post?.content) return '';
-    return DOMPurify.sanitize(post.content, {
-      ALLOWED_TAGS: ['p', 'div', 'span', 'strong', 'em', 'ul', 'ol', 'li', 'h2', 'h3', 'blockquote', 'a', 'img', 'video', 'source', 'iframe'],
-      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'controls', 'allow', 'allowfullscreen', 'frameborder', 'style', 'data-size', 'data-type', 'data-name', 'data-cols', 'class'],
+    const clean = DOMPurify.sanitize(post.content, {
+      ALLOWED_TAGS: ['p', 'div', 'span', 'strong', 'em', 'ul', 'ol', 'li', 'h2', 'h3', 'blockquote', 'a', 'img', 'video', 'source', 'iframe', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'mark'],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'controls', 'allow', 'allowfullscreen', 'frameborder', 'style', 'data-size', 'data-type', 'data-name', 'data-cols', 'class', 'colspan', 'rowspan', 'data-colwidth'],
     });
+    // Ajout automatique du lazy-loading sur toutes les images publiques
+    return clean.replace(/<img /g, '<img loading="lazy" ');
   }, [post?.content]);
+
+  const siteUrl = window.location.origin;
+  const postUrl = `${siteUrl}/actualites/${post?.slug}`;
+  const seoTitle = post?.seoTitle || post?.title || "Récit | ONG Impact";
+  const seoDescription = post?.seoDescription || (post?.excerpt ? stripHtml(post.excerpt).slice(0, 160) : "Découvrez les missions de notre ONG.");
+  const seoImage = post?.featuredImage || `${siteUrl}/assets/hero.png`;
 
   if (isLoading) {
     return (
@@ -80,6 +89,25 @@ const PostDetail = () => {
 
   return (
     <article className="pb-24 max-w-7xl mx-auto space-y-12 px-6 lg:px-12">
+
+      {/* ── SEO dynamique (Helmet) ── */}
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        {/* Open Graph (LinkedIn, Facebook) */}
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={postUrl} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:image" content={seoImage} />
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+        {/* Canonical URL */}
+        <link rel="canonical" href={postUrl} />
+      </Helmet>
       {/* ── Banner de Prévisualisation ── */}
       {post.status !== 'PUBLISHED' && (
         <div className="sticky top-24 z-50 mx-6 md:mx-0 p-4 bg-primary/90 backdrop-blur-md text-white rounded-[24px] shadow-2xl shadow-primary/20 border border-primary/30 flex items-center justify-between animate-in slide-in-from-top-4 duration-500 transition-all">

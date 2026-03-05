@@ -44,6 +44,12 @@ import {
   Highlighter,
   Table as TableIcon,
   Trash2,
+  TableProperties,
+  ArrowDownToLine,
+  ArrowUpToLine,
+  ArrowRightToLine,
+  ArrowLeftToLine,
+  MinusSquare,
 } from 'lucide-react';
 import api from '../api/axios';
 import { useEffect, useRef, useState } from 'react';
@@ -407,14 +413,47 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
           >
             <TableIcon size={14} />
           </ToolBtn>
+
           {editor.isActive('table') && (
-            <ToolBtn
-              onClick={() => editor.chain().focus().deleteTable().run()}
-              title="Supprimer le tableau"
-              className="text-red-500 hover:text-red-600 hover:bg-red-50"
-            >
-              <Trash2 size={14} />
-            </ToolBtn>
+            <div className="flex items-center gap-0.5 ml-1 pl-1 border-l border-border">
+              {/* Lignes */}
+              <ToolBtn onClick={() => editor.chain().focus().addRowBefore().run()} title="Ajouter ligne avant">
+                <ArrowUpToLine size={12} />
+              </ToolBtn>
+              <ToolBtn onClick={() => editor.chain().focus().addRowAfter().run()} title="Ajouter ligne après">
+                <ArrowDownToLine size={12} />
+              </ToolBtn>
+              <ToolBtn onClick={() => editor.chain().focus().deleteRow().run()} title="Supprimer la ligne">
+                <MinusSquare size={12} className="text-red-400" />
+              </ToolBtn>
+
+              <Sep />
+
+              {/* Colonnes */}
+              <ToolBtn onClick={() => editor.chain().focus().addColumnBefore().run()} title="Ajouter colonne avant">
+                <ArrowLeftToLine size={12} />
+              </ToolBtn>
+              <ToolBtn onClick={() => editor.chain().focus().addColumnAfter().run()} title="Ajouter colonne après">
+                <ArrowRightToLine size={12} />
+              </ToolBtn>
+              <ToolBtn onClick={() => editor.chain().focus().deleteColumn().run()} title="Supprimer la colonne">
+                <MinusSquare size={12} className="text-red-400" />
+              </ToolBtn>
+
+              <Sep />
+
+              <ToolBtn onClick={() => editor.chain().focus().toggleHeaderRow().run()} title="Activer/Désactiver l'en-tête">
+                <TableProperties size={12} />
+              </ToolBtn>
+
+              <ToolBtn
+                onClick={() => editor.chain().focus().deleteTable().run()}
+                title="Supprimer tout le tableau"
+                className="text-red-500 hover:text-red-600 hover:bg-red-50"
+              >
+                <Trash2 size={12} />
+              </ToolBtn>
+            </div>
           )}
 
         </div>

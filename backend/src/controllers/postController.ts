@@ -69,13 +69,13 @@ export const createPost = async (req: AuthRequest, res: Response) => {
         featured: featured ?? false,
         type: type || inferredType,
         authorId,
-        status: 'DRAFT', // All new posts are drafts by default
+        status: req.body.status && (dbUser.role === 'ADMIN' || dbUser.role === 'EDITOR') ? req.body.status : 'DRAFT',
         seoTitle: seoTitle || null,
         seoDescription: seoDescription || null,
         categories: categories
           ? {
-              connect: categories.map((catId: string) => ({ id: catId })),
-            }
+            connect: categories.map((catId: string) => ({ id: catId })),
+          }
           : undefined,
       },
       include: {
@@ -275,10 +275,10 @@ export const validatePost = async (req: AuthRequest, res: Response) => {
 export const deletePost = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    
+
     // Check if user is author or admin
     const post = await prisma.post.findUnique({ where: { id } });
-    
+
     if (!post) {
       return res.status(404).json({ message: 'Article non trouvé' });
     }

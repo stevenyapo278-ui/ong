@@ -6,7 +6,7 @@ import { inferPostTypeFromHtml } from '../utils/postType';
 export const updatePost = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const { title, content, excerpt, featuredImage, type, seoTitle, seoDescription, categories } = req.body;
+    const { title, content, excerpt, featuredImage, type, seoTitle, seoDescription, categories, status } = req.body;
 
     const existing = await prisma.post.findUnique({ where: { id } });
 
@@ -31,6 +31,11 @@ export const updatePost = async (req: AuthRequest, res: Response) => {
       seoTitle: seoTitle ?? existing.seoTitle,
       seoDescription: seoDescription ?? existing.seoDescription,
     };
+
+    if (status && (req.user?.role === 'ADMIN' || req.user?.role === 'EDITOR')) {
+      updateData.status = status;
+    }
+
     if (Array.isArray(categories)) {
       updateData.categories = { set: categories.map((catId: string) => ({ id: catId })) };
     }

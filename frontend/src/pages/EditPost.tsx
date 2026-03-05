@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Loader2,
@@ -16,8 +16,10 @@ import api from '../api/axios';
 import { usePostById } from '../hooks/usePostById';
 import RichTextEditor from '../components/RichTextEditor';
 import { getCategories, Category } from '../api/categoriesApi';
+import { useAuth } from '../context/AuthContext';
 
 const EditPost = () => {
+  const { user } = useAuth();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: post, isLoading } = usePostById(id);
@@ -30,6 +32,9 @@ const EditPost = () => {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [showSettings, setShowSettings] = useState(false);
+  const [lastAutoSaved, setLastAutoSaved] = useState<string | null>(null);
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isFirstLoad = useRef(true);
 
   useEffect(() => {
     getCategories().then(setCategories);
@@ -44,6 +49,36 @@ const EditPost = () => {
       setSelectedCategoryIds(post.categories?.map((c) => c.id) ?? []);
     }
   }, [post]);
+
+  // Autosave: every 30s of inactivity, silently save as draft
+  const autoSave = useCallback(async () => {
+    if (!id || !title || isFirstLoad.current) return;
+    try {
+      await api.put(`/posts/${id}`, {
+        title,
+        excerpt: excerpt || undefined,
+        content,
+        featuredImage: featuredImage || undefined,
+        categories: selectedCategoryIds,
+      });
+      const now = new Date();
+      setLastAutoSaved(`${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`);
+    } catch (_) {
+      // silenieux
+    }
+  }, [id, title, excerpt, content, featuredImage, selectedCategoryIds]);
+
+  useEffect(() => {
+    if (isFirstLoad.current) {
+      isFirstLoad.current = false;
+      return;
+    }
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    autoSaveTimerRef.current = setTimeout(autoSave, 30000);
+    return () => {
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    };
+  }, [title, content, excerpt, featuredImage, autoSave]);
 
   const handleFeaturedImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -79,13 +114,23 @@ const EditPost = () => {
     setSaveStatus('saving');
 
     try {
-      await api.put(`/posts/${id}`, {
+      const payload: any = {
         title,
         excerpt: excerpt || undefined,
         content,
         featuredImage: featuredImage || undefined,
         categories: selectedCategoryIds,
-      });
+      };
+
+      // Si l'article est actuellement DRAFT ou PENDING et n'a jamais été publié (ou bien on force), 
+      // on peut envoyer status PUBLISHED si l'utilisateur est admin/editor pour forcer la publication lors de la sauvegarde.
+      // (Vous pouvez adapter si vous souhaitez qu'EditPost sépare la sauvegarde de la publication,
+      //  mais selon votre message, vous vouliez régler l'enregistrement.)
+      if ((user?.role === 'ADMIN' || user?.role === 'EDITOR') && post?.status !== 'PUBLISHED') {
+        payload.status = 'PUBLISHED';
+      }
+
+      await api.put(`/posts/${id}`, payload);
       setSaveStatus('saved');
       setTimeout(() => setSaveStatus('idle'), 3000);
     } catch (err: any) {
@@ -134,8 +179,13 @@ const EditPost = () => {
             {saveStatus === 'saving' && <Loader2 size={12} className="animate-spin text-primary" />}
             {saveStatus === 'saved' && <CheckCircle size={12} className="text-green-500" />}
             {saveStatus === 'error' && <AlertCircle size={12} className="text-red-500" />}
+            {saveStatus === 'idle' && lastAutoSaved && <CheckCircle size={12} className="text-green-400 opacity-60" />}
             <span className="text-[10px] font-black text-foreground-muted uppercase tracking-widest transition-colors">
-              {saveStatus === 'saving' ? 'Enregistrement...' : saveStatus === 'saved' ? 'Enregistré' : 'Brouillon local'}
+              {saveStatus === 'saving' ? 'Enregistrement...'
+                : saveStatus === 'saved' ? 'Enregistré ✓'
+                  : saveStatus === 'error' ? 'Erreur'
+                    : lastAutoSaved ? `Sauvegardé à ${lastAutoSaved}`
+                      : 'Brouillon local'}
             </span>
           </div>
 

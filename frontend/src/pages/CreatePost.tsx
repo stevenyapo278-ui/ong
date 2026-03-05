@@ -15,8 +15,10 @@ import {
 import api from '../api/axios';
 import RichTextEditor from '../components/RichTextEditor';
 import { getCategories, Category } from '../api/categoriesApi';
+import { useAuth } from '../context/AuthContext';
 
 const CreatePost = () => {
+  const { user } = useAuth();
   const [title, setTitle] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [content, setContent] = useState('');
@@ -67,13 +69,19 @@ const CreatePost = () => {
     setSaveStatus('saving');
 
     try {
-      await api.post('/posts', {
+      const payload: any = {
         title,
         content,
         excerpt: excerpt || undefined,
         featuredImage: featuredImage || undefined,
         categories: selectedCategoryIds.length ? selectedCategoryIds : undefined,
-      });
+      };
+
+      if (user?.role === 'ADMIN' || user?.role === 'EDITOR') {
+        payload.status = 'PUBLISHED';
+      }
+
+      await api.post('/posts', payload);
       setSaveStatus('saved');
       setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
