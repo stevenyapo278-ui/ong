@@ -1,4 +1,6 @@
 import { Node, mergeAttributes } from '@tiptap/core';
+import { ReactNodeViewRenderer } from '@tiptap/react';
+import { VideoNodeView } from './VideoNodeView';
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -19,6 +21,7 @@ const VideoNode = Node.create({
     return {
       src: {
         default: null,
+        renderHTML: attrs => ({ 'data-src': attrs.src, src: attrs.src }),
       },
       controls: {
         default: true,
@@ -42,9 +45,14 @@ const VideoNode = Node.create({
 
   renderHTML({ HTMLAttributes }) {
     return [
-      'video',
-      mergeAttributes(HTMLAttributes, { controls: true }),
+      'div',
+      { 'data-type': 'video', class: 'video-node-container' },
+      ['video', mergeAttributes(HTMLAttributes, { controls: true })]
     ];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(VideoNodeView);
   },
 
   addCommands() {

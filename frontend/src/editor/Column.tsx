@@ -20,6 +20,18 @@ const Column = Node.create({
           'data-width': attributes.width,
         }),
       },
+      verticalAlign: {
+        default: 'top',
+        parseHTML: element => element.getAttribute('data-vertical-align') || 'top',
+        renderHTML: attributes => ({
+          'data-vertical-align': attributes.verticalAlign,
+          style: `width: ${attributes.width}; display: flex; flex-direction: column; justify-content: ${
+            attributes.verticalAlign === 'middle' ? 'center' : 
+            attributes.verticalAlign === 'bottom' ? 'flex-end' : 
+            'flex-start'
+          };`
+        }),
+      },
     };
   },
 

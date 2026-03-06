@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Clock, Calendar, Share2, Facebook, Twitter, Link as LinkIcon, ChevronRight, Eye, FileText } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Share2, Facebook, Twitter, Link as LinkIcon, ChevronRight, Eye } from 'lucide-react';
 import { usePost } from '../hooks/usePost';
 import DOMPurify from 'dompurify';
 import { Helmet } from 'react-helmet-async';
@@ -51,8 +51,8 @@ const PostDetail = () => {
   const sanitizedContent = useMemo(() => {
     if (!post?.content) return '';
     const clean = DOMPurify.sanitize(post.content, {
-      ALLOWED_TAGS: ['p', 'div', 'span', 'strong', 'em', 'ul', 'ol', 'li', 'h2', 'h3', 'blockquote', 'a', 'img', 'video', 'source', 'iframe', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'mark'],
-      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'controls', 'allow', 'allowfullscreen', 'frameborder', 'style', 'data-size', 'data-type', 'data-name', 'data-cols', 'class', 'colspan', 'rowspan', 'data-colwidth'],
+      ALLOWED_TAGS: ['p', 'div', 'span', 'strong', 'em', 'ul', 'ol', 'li', 'h2', 'h3', 'blockquote', 'a', 'img', 'video', 'source', 'iframe', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'mark', 'svg', 'path', 'polyline', 'rect', 'circle', 'line', 'hr'],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'controls', 'allow', 'allowfullscreen', 'frameborder', 'style', 'data-size', 'data-type', 'data-name', 'data-src', 'data-cols', 'class', 'colspan', 'rowspan', 'data-colwidth', 'viewBox', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'd', 'points', 'width', 'height', 'x', 'y', 'x1', 'y1', 'x2', 'y2'],
     });
     // Ajout automatique du lazy-loading sur toutes les images publiques
     return clean.replace(/<img /g, '<img loading="lazy" ');
@@ -202,37 +202,6 @@ const PostDetail = () => {
           />
         )}
       </section>
-
-      {/* ── Galerie ── */}
-      {post.media && post.media.length > 0 && (
-        <section className="bg-background-alt rounded-[50px] p-8 md:p-16 space-y-10 transition-colors border border-border">
-          <div className="text-center space-y-3">
-            <h2 className="text-primary font-black tracking-[0.2em] text-sm uppercase transition-colors">DOCUMENTS & VISUELS</h2>
-            <h3 className="text-3xl font-black text-foreground tracking-tight transition-colors transition-all">Galerie de la mission</h3>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-            {post.media.map((m) => (
-              <div key={m.id} className="aspect-[4/3] bg-background p-2 rounded-3xl shadow-sm border border-border overflow-hidden transform hover:-rotate-1 hover:scale-105 transition-all duration-500 cursor-pointer flex flex-col items-center justify-center gap-3">
-                {m.type.startsWith('image/') ? (
-                  <img src={m.url} alt="" loading="lazy" className="w-full h-full object-cover rounded-2xl" />
-                ) : m.type.startsWith('video/') ? (
-                  <video src={m.url} controls className="w-full h-full object-cover rounded-2xl" />
-                ) : (
-                  <a href={m.url} target="_blank" rel="noopener noreferrer" className="w-full h-full flex flex-col items-center justify-center p-6 text-center hover:bg-primary/5 transition-colors rounded-2xl group">
-                    <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                      <FileText size={32} />
-                    </div>
-                    <p className="mt-4 text-xs font-black uppercase tracking-widest text-foreground truncate max-w-full px-2">
-                      {m.url.split('/').pop() || 'Document'}
-                    </p>
-                    <span className="text-[10px] font-bold text-primary mt-1">Télécharger</span>
-                  </a>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* ── Related articles ── */}
       {related.length > 0 && (

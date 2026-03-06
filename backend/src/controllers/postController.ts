@@ -293,3 +293,60 @@ export const deletePost = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: 'Erreur lors de la suppression de l\'article', error });
   }
 };
+
+export const duplicatePost = async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const post = await prisma.post.findUnique({
+      where: { id },
+      include: {
+        categories: true,
+        media: true,
+      },
+    });
+
+    if (!post) {
+      return res.status(404).json({ message: 'Article non trouvé' });
+    }
+
+    const newTitle = `${post.title} (Copie)`;
+    const newSlug = await generateUniqueSlug(newTitle);
+
+    const duplicatedPost = await prisma.post.create({
+      data: {
+        title: newTitle,
+        slug: newSlug,
+        content: post.content,
+        excerpt: post.excerpt,
+        featuredImage: post.featuredImage,
+        featured: false,
+        type: post.type,
+        authorId: req.user?.id || post.authorId,
+        status: 'DRAFT',
+        seoTitle: post.seoTitle ? `${post.seoTitle} (Copie)` : null,
+        seoDescription: post.seoDescription,
+        categories: {
+          connect: post.categories.map((cat: any) => ({ id: cat.id })),
+        },
+        // Duplicate media references
+        media: {
+          create: post.media.map((m: any) => ({
+            url: m.url,
+            type: m.type,
+          })),
+        },
+      },
+      include: {
+        author: { select: { name: true, email: true } },
+        categories: true,
+        media: true,
+      },
+    });
+
+    res.status(201).json(duplicatedPost);
+  } catch (error) {
+    console.error('Erreur duplicatePost:', error);
+    res.status(500).json({ message: 'Erreur lors de la duplication de l\'article' });
+  }
+};

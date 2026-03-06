@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Search, FileEdit, Trash2, Clock, CheckCircle, AlertCircle, Hourglass, Eye, LayoutGrid, Users, Settings, ChevronRight, Loader2, Tag, Mail } from 'lucide-react';
+import { Plus, Search, FileEdit, Trash2, Clock, CheckCircle, AlertCircle, Hourglass, Eye, LayoutGrid, Users, Settings, ChevronRight, Loader2, Tag, Mail, Copy, Send, XCircle } from 'lucide-react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { formatPostType } from '../utils/post';
@@ -15,6 +15,10 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<'posts' | 'users' | 'categories' | 'newsletter' | 'settings'>('posts');
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'DRAFT' | 'PENDING' | 'PUBLISHED'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [authorSearch, setAuthorSearch] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const { user } = useAuth();
   const { showNotification, confirm } = useOverlay();
   const navigate = useNavigate();
@@ -77,6 +81,50 @@ const Dashboard = () => {
       handleAction(() => api.delete(`/posts/${postId}`), postId, "Publication supprimée avec succès", "delete");
     }
   };
+
+  const handleDuplicatePost = async (postId: string) => {
+    handleAction(
+      () => api.post(`/posts/${postId}/duplicate`),
+      postId,
+      "Publication dupliquée avec succès (voir Brouillons)",
+      "success"
+    );
+  };
+
+  const filteredPosts = useMemo(() => {
+    return posts.filter((post) => {
+      // Filtrage par Statut
+      if (statusFilter !== 'all' && post.status !== statusFilter) return false;
+
+      // Recherche par Titre / Contenu
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const inTitle = post.title?.toLowerCase().includes(query);
+        const inContent = post.content?.toLowerCase().includes(query);
+        if (!inTitle && !inContent) return false;
+      }
+
+      // Filtrage par Rédacteur
+      if (authorSearch) {
+        const query = authorSearch.toLowerCase();
+        if (!post.author?.name?.toLowerCase().includes(query)) return false;
+      }
+
+      // Filtrage par Date
+      const postDate = new Date(post.publishedAt || post.createdAt);
+      if (startDate) {
+        const start = new Date(startDate);
+        if (postDate < start) return false;
+      }
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59); // Fin de journée
+        if (postDate > end) return false;
+      }
+
+      return true;
+    });
+  }, [posts, statusFilter, searchQuery, authorSearch, startDate, endDate]);
 
   return (
     <div className="space-y-10 py-6 max-w-7xl mx-auto px-4 md:px-0">
@@ -158,35 +206,90 @@ const Dashboard = () => {
 
           {/* ── Posts Main Table ── */}
           <div className="bg-background rounded-[40px] shadow-sm border border-border overflow-hidden transition-colors">
-            <div className="p-10 border-b border-border flex flex-col lg:flex-row justify-between lg:items-center gap-6">
-              <h2 className="text-2xl font-black text-foreground tracking-tight transition-colors">Liste de vos publications</h2>
-
-              <div className="flex flex-col sm:flex-row items-center gap-4">
-                <div className="relative group w-full sm:w-64">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground-muted group-focus-within:text-primary transition-colors" size={18} />
-                  <input
-                    type="text"
-                    placeholder="Filtrer vos articles..."
-                    className="w-full pl-12 pr-4 py-3 bg-background-alt border-2 border-border rounded-2xl text-sm font-bold placeholder-foreground-muted/40 focus:outline-none focus:border-primary focus:bg-background text-foreground transition-all"
-                  />
-                </div>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value as any)}
-                  className="w-full sm:w-auto pl-5 pr-10 py-3 bg-primary/10 border-2 border-primary/10 rounded-2xl text-xs font-black uppercase tracking-widest text-primary focus:outline-none focus:border-primary transition-all appearance-none cursor-pointer"
-                >
-                  <option value="all">Tous les Statuts</option>
-                  <option value="DRAFT">Brouillons</option>
-                  <option value="PENDING">En attente</option>
-                  <option value="PUBLISHED">Publiés</option>
-                </select>
-
+            <div className="p-10 border-b border-border space-y-8">
+              <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-6">
+                <h2 className="text-2xl font-black text-foreground tracking-tight transition-colors">Liste de vos publications</h2>
                 <Link
                   to="/create-post"
-                  className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 bg-primary text-white font-black text-sm uppercase tracking-widest rounded-2xl hover:bg-foreground hover:text-background transition-all shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95"
+                  className="inline-flex items-center justify-center px-8 py-3 bg-primary text-white font-black text-sm uppercase tracking-widest rounded-2xl hover:bg-foreground hover:text-background transition-all shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 ml-auto"
                 >
                   <Plus size={18} className="mr-2" /> Créer
                 </Link>
+              </div>
+
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-wrap items-center gap-4">
+                  {/* Recherche Globale */}
+                  <div className="relative group flex-1 min-w-[250px]">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground-muted group-focus-within:text-primary transition-colors" size={18} />
+                    <input
+                      type="text"
+                      placeholder="Chercher dans les titres..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 bg-background-alt border-2 border-border rounded-2xl text-sm font-bold placeholder-foreground-muted/40 focus:outline-none focus:border-primary focus:bg-background text-foreground transition-all"
+                    />
+                  </div>
+
+                  {/* Recherche par Rédacteur */}
+                  <div className="relative group w-full sm:w-64">
+                    <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground-muted group-focus-within:text-primary transition-colors" size={18} />
+                    <input
+                      type="text"
+                      placeholder="Par rédacteur..."
+                      value={authorSearch}
+                      onChange={(e) => setAuthorSearch(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 bg-background-alt border-2 border-border rounded-2xl text-sm font-bold placeholder-foreground-muted/40 focus:outline-none focus:border-primary focus:bg-background text-foreground transition-all"
+                    />
+                  </div>
+
+                  {/* Statut */}
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value as any)}
+                    className="pl-5 pr-10 py-3 bg-primary/10 border-2 border-primary/10 rounded-2xl text-xs font-black uppercase tracking-widest text-primary focus:outline-none focus:border-primary transition-all appearance-none cursor-pointer"
+                  >
+                    <option value="all">Tous les Statuts</option>
+                    <option value="DRAFT">Brouillons</option>
+                    <option value="PENDING">En attente</option>
+                    <option value="PUBLISHED">Publiés</option>
+                  </select>
+                </div>
+
+                {/* Filtres de Date */}
+                <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-border/50">
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-black uppercase text-foreground-muted">Période du</span>
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="px-4 py-2 bg-background-alt border border-border rounded-xl text-xs font-bold focus:outline-none focus:border-primary transition-all"
+                    />
+                    <span className="text-[10px] font-black uppercase text-foreground-muted">au</span>
+                    <input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="px-4 py-2 bg-background-alt border border-border rounded-xl text-xs font-bold focus:outline-none focus:border-primary transition-all"
+                    />
+                  </div>
+                  
+                  {(startDate || endDate || authorSearch || searchQuery || statusFilter !== 'all') && (
+                    <button 
+                      onClick={() => {
+                        setSearchQuery('');
+                        setAuthorSearch('');
+                        setStartDate('');
+                        setEndDate('');
+                        setStatusFilter('all');
+                      }}
+                      className="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-600 transition-colors underline underline-offset-4"
+                    >
+                      Réinitialiser les filtres
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -210,9 +313,7 @@ const Dashboard = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border transition-colors">
-                      {posts
-                        .filter((post) => statusFilter === 'all' || post.status === statusFilter)
-                        .map((post) => (
+                      {filteredPosts.map((post) => (
                           <tr key={post.id} className="group hover:bg-background-alt transition-colors">
                             <td className="px-10 py-8">
                               <div className="space-y-1">
@@ -236,6 +337,37 @@ const Dashboard = () => {
                             <td className="px-10 py-8 text-right space-x-2">
                               <div className="flex items-center justify-end gap-2 opacity-100 lg:opacity-30 group-hover:opacity-100 transition-opacity">
                                 <button onClick={() => navigate(`/posts/${post.id}/edit`)} className="p-3 text-foreground-muted hover:text-primary hover:bg-primary/10 rounded-2xl transition-all" title="Modifier"><FileEdit size={20} /></button>
+                                <button onClick={() => handleDuplicatePost(post.id)} className="p-3 text-foreground-muted hover:text-primary hover:bg-primary/10 rounded-2xl transition-all" title="Dupliquer"><Copy size={20} /></button>
+                                
+                                {post.status === 'DRAFT' && post.authorId === user?.id && (
+                                  <button 
+                                    onClick={() => handleAction(() => api.put(`/posts/${post.id}/submit`), post.id, "Soumis", "submit")} 
+                                    className="p-3 text-primary hover:bg-primary/10 rounded-2xl transition-all" 
+                                    title="Soumettre pour validation"
+                                  >
+                                    <Send size={20} />
+                                  </button>
+                                )}
+
+                                {user?.role === 'ADMIN' && post.status === 'PENDING' && (
+                                  <>
+                                    <button 
+                                      onClick={() => handleAction(() => api.put(`/posts/${post.id}/validate`, { status: 'PUBLISHED' }), post.id, "Publié", "success")} 
+                                      className="p-3 text-green-500 hover:bg-green-500/10 rounded-2xl transition-all" 
+                                      title="Valider la publication"
+                                    >
+                                      <CheckCircle size={20} />
+                                    </button>
+                                    <button 
+                                      onClick={() => handleAction(() => api.put(`/posts/${post.id}/validate`, { status: 'DRAFT' }), post.id, "Refusé", "error")} 
+                                      className="p-3 text-amber-500 hover:bg-amber-500/10 rounded-2xl transition-all" 
+                                      title="Refuser / Retour en brouillon"
+                                    >
+                                      <XCircle size={20} />
+                                    </button>
+                                  </>
+                                )}
+
                                 <button onClick={() => window.open(`/actualites/${post.slug || post.id}`, '_blank')} className="p-3 text-foreground-muted hover:text-primary hover:bg-primary/10 rounded-2xl transition-all" title="Voir"><Eye size={20} /></button>
                                 <button onClick={() => handleDeletePost(post.id)} className="p-3 text-foreground-muted hover:text-red-500 hover:bg-red-500/10 rounded-2xl transition-all" title="Supprimer">{actionLoadingId === post.id ? <Loader2 size={20} className="animate-spin" /> : <Trash2 size={20} />}</button>
                               </div>
@@ -248,9 +380,7 @@ const Dashboard = () => {
 
                 {/* Mobile View Cards */}
                 <div className="lg:hidden divide-y divide-border transition-colors">
-                  {posts
-                    .filter((post) => statusFilter === 'all' || post.status === statusFilter)
-                    .map((post) => (
+                  {filteredPosts.map((post) => (
                       <div key={post.id} className="p-6 space-y-6">
                         <div className="flex justify-between items-start gap-4">
                           <div className="space-y-1">
@@ -263,6 +393,7 @@ const Dashboard = () => {
                           <span className="text-xs text-foreground-muted font-bold transition-colors">{new Date(post.createdAt).toLocaleDateString()}</span>
                           <div className="flex gap-2">
                             <button onClick={() => navigate(`/posts/${post.id}/edit`)} className="p-2.5 bg-background-alt text-foreground-muted rounded-xl border border-border transition-all"><FileEdit size={18} /></button>
+                            <button onClick={() => handleDuplicatePost(post.id)} className="p-2.5 bg-background-alt text-foreground-muted rounded-xl border border-border transition-all"><Copy size={18} /></button>
                             <button onClick={() => window.open(`/actualites/${post.slug || post.id}`, '_blank')} className="p-2.5 bg-background-alt text-foreground-muted rounded-xl border border-border transition-all"><Eye size={18} /></button>
                             <button onClick={() => handleDeletePost(post.id)} className="p-2.5 bg-red-500/10 text-red-500 rounded-xl border border-red-500/20 transition-all"><Trash2 size={18} /></button>
                           </div>

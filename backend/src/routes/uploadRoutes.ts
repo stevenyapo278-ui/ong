@@ -2,6 +2,8 @@ import { Router, Request, Response } from 'express';
 import { upload } from '../utils/upload';
 import { protect } from '../middleware/auth';
 import prisma from '../prisma';
+import fs from 'fs';
+import path from 'path';
 
 const router = Router();
 
@@ -55,6 +57,42 @@ router.post('/', protect, (req: Request, res: Response, next: Function) => {
     res.json(savedMedia);
   } catch (error) {
     res.status(500).json({ message: 'Erreur lors du téléchargement des fichiers', error });
+  }
+});
+
+// DELETE a media by ID
+router.delete('/:id', protect, async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    
+    // 1. Find the media in DB to get its URL
+    const media = await prisma.media.findUnique({
+      where: { id }
+    });
+
+    if (!media) {
+      return res.status(404).json({ message: 'Média introuvable' });
+    }
+
+    // 2. Resolve the file path (URL is likely /uploads/...)
+    // If url is /uploads/images/filename.jpg, we want the relative path to root: uploads/images/filename.jpg
+    const relativePath = media.url.startsWith('/') ? media.url.substring(1) : media.url;
+    const absolutePath = path.join(process.cwd(), relativePath);
+
+    // 3. Delete from filesystem if it exists
+    if (fs.existsSync(absolutePath)) {
+      fs.unlinkSync(absolutePath);
+    }
+
+    // 4. Delete from DB
+    await prisma.media.delete({
+      where: { id }
+    });
+
+    res.json({ message: 'Média supprimé avec succès' });
+  } catch (error) {
+    console.error('Erreur lors de la suppression du média:', error);
+    res.status(500).json({ message: 'Erreur lors de la suppression du média', error });
   }
 });
 

@@ -145,11 +145,29 @@ body {
   max-width: 100%;
 }
 
-.rich-content iframe {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 0.75rem;
+.rich-content iframe,
+.ProseMirror iframe,
+.rich-content video,
+.ProseMirror video {
+  width: 100% !important;
+  max-width: 100% !important;
+  aspect-ratio: 16 / 9 !important;
+  border-radius: 1.25rem !important;
+  border: 1px solid var(--border) !important;
+  display: block !important;
+  margin: 2rem 0 !important;
+  background: black !important;
 }
+
+[data-youtube-video] {
+  margin: 2rem 0;
+  position: relative;
+}
+
+[data-youtube-video] iframe {
+  margin: 0 !important;
+}
+
 
 /* ═══════════════════════════════════════════════
    STABILISATION MÉDIAS (FIX VIDEOS)
@@ -225,10 +243,13 @@ body {
 
 /* RENDU PUBLIC : Chaque colonne est un item de grille proprement dit */
 .rich-content [data-type="column"] {
-  display: block !important;
+  display: flex !important;
+  flex-direction: column !important;
   width: 100% !important;
   height: 100% !important;
+  min-height: 50px;
 }
+
 
 .ProseMirror .node-columnBlock .column-block-grid {
   background: var(--background-alt);
@@ -259,7 +280,8 @@ body {
 .ProseMirror .node-columnBlock>[data-node-view-wrapper],
 .ProseMirror .column-node-view>[data-node-view-wrapper] {
   width: 100% !important;
-  display: block !important;
+  display: flex !important;
+  height: 100% !important;
 }
 
 .column-node-view [data-node-view-content-react]>* {
@@ -394,6 +416,11 @@ body {
   box-sizing: border-box !important;
 }
 
+.rich-content [data-type="column"] > [data-type="file"]:only-child,
+.ProseMirror [data-node-view-content-react] > [data-type="file"]:only-child {
+  margin: 0 !important;
+}
+
 .file-node-container * {
   box-sizing: border-box !important;
 }
@@ -474,4 +501,48 @@ body {
 /* Fix specificity for editor and various modes */
 .ProseMirror .file-node-link * {
   text-decoration: none !important;
+}
+
+/* ═══════════════════════════════════════════════
+   ULTIMATE ALIGNMENT FIX FOR COLUMNS
+   (Predictable vertical flow)
+   ═══════════════════════════════════════════════ */
+
+/* Reset radical de TOUTES les marges hautes dans les colonnes */
+.rich-content [data-type="column"] > *,
+.ProseMirror [data-node-view-content-react] > * {
+  margin-top: 0 !important;
+  margin-bottom: 1.5rem !important; /* Espacement standard entre blocs */
+}
+
+/* Le dernier bloc ne doit pas avoir de marge basse pour ne pas étirer la colonne */
+.rich-content [data-type="column"] > *:last-child,
+.ProseMirror [data-node-view-content-react] > *:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Suppression des marges internes pour les types spécifiques s'ils sont dans une colonne */
+.rich-content [data-type="column"] .tableWrapper,
+.ProseMirror [data-node-view-content-react] .tableWrapper,
+.rich-content [data-type="column"] [data-type="file"],
+.ProseMirror [data-node-view-content-react] [data-type="file"],
+.rich-content [data-type="column"] [data-type="video"],
+.ProseMirror [data-node-view-content-react] [data-type="video"] {
+  margin-top: 0 !important;
+}
+
+/* Cache les paragraphes vides parasites */
+.rich-content [data-type="column"] > p:empty,
+.ProseMirror [data-node-view-content-react] > p:empty {
+  display: none !important;
+}
+
+/* S'assurer que les titres n'ajoutent pas de marge en haut */
+.rich-content [data-type="column"] h2,
+.rich-content [data-type="column"] h3,
+.ProseMirror [data-node-view-content-react] h2,
+.ProseMirror [data-node-view-content-react] h3,
+.rich-content [data-type="column"] > *:first-child,
+.ProseMirror [data-node-view-content-react] > *:first-child {
+  margin-top: 0 !important;
 }

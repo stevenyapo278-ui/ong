@@ -2,7 +2,9 @@ import { NodeViewWrapper, NodeViewContent } from '@tiptap/react';
 import type { NodeViewProps } from '@tiptap/react';
 import { X } from 'lucide-react';
 
-export const ColumnView = ({ deleteNode }: NodeViewProps) => {
+export const ColumnView = ({ node, deleteNode }: NodeViewProps) => {
+  const verticalAlign = node.attrs.verticalAlign || 'top';
+  
   return (
     <NodeViewWrapper
       className="column-node-view"
@@ -11,7 +13,8 @@ export const ColumnView = ({ deleteNode }: NodeViewProps) => {
         height: '100%',
         minHeight: '100px',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        justifyContent: verticalAlign === 'middle' ? 'center' : verticalAlign === 'bottom' ? 'flex-end' : 'flex-start'
       }}
     >
       {/* Bouton de suppression individuelle (discret) */}
@@ -38,11 +41,8 @@ export const ColumnView = ({ deleteNode }: NodeViewProps) => {
 
       <NodeViewContent
         style={{
-          flex: 1,
-          padding: '8px 12px', // Réduit pour laisser plus de place au texte
+          padding: '8px 12px',
           outline: 'none',
-          height: '100%',
-          minHeight: '100px',
           width: '100%'
         }}
       />
