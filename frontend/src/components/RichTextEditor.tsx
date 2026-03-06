@@ -12,6 +12,7 @@ import { TableRow } from '@tiptap/extension-table-row';
 import { TableCell } from '@tiptap/extension-table-cell';
 import { TableHeader } from '@tiptap/extension-table-header';
 import { Highlight } from '@tiptap/extension-highlight';
+import CharacterCount from '@tiptap/extension-character-count';
 import {
   Bold,
   Italic,
@@ -28,15 +29,10 @@ import {
   AlignCenter,
   AlignRight,
   AlignJustify,
-  Image as ImageIcon,
-  Video,
-  FileText,
-  Youtube as YoutubeIcon,
   Columns2,
   Columns3,
   Maximize2,
   Minimize2,
-  Minus,
   RefreshCw,
   Undo2,
   Redo2,
@@ -44,23 +40,26 @@ import {
   Highlighter,
   Table as TableIcon,
   Trash2,
-  TableProperties,
   ArrowDownToLine,
-  ArrowUpToLine,
   ArrowRightToLine,
-  ArrowLeftToLine,
-  MinusSquare,
+  FolderOpen,
+  Youtube as YoutubeIcon,
+  Minus,
+  Grid,
+  Square,
+  TableProperties
 } from 'lucide-react';
-import api from '../api/axios';
 import { useEffect, useRef, useState } from 'react';
 import VideoNode from '../editor/VideoNode';
 import FileNode from '../editor/FileNode';
 import ColumnBlock from '../editor/ColumnBlock';
 import Column from '../editor/Column';
+import MediaManager from './MediaManager';
 
 interface RichTextEditorProps {
   value: string;
   onChange: (html: string) => void;
+  postId?: string;
 }
 
 // Séparateur vertical de la barre d'outils
@@ -92,9 +91,10 @@ const ToolBtn = ({
   </button>
 );
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
+const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, postId }) => {
   const lastExternalValue = useRef<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMediaManagerOpen, setIsMediaManagerOpen] = useState(false);
 
   const editor = useEditor({
     extensions: [
@@ -106,6 +106,16 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
       Link.configure({
         openOnClick: true,
         HTMLAttributes: { target: '_blank', rel: 'noopener noreferrer' },
+        validate: url => !!url,
+      }).extend({
+        // Empêche Link de parser les <a> internes de nos FileNodes ou VideoNodes
+        parseHTML() {
+          return [
+            {
+              tag: 'a:not([data-type="file"]):not(.file-node-link)',
+            },
+          ];
+        },
       }),
       Image.extend({
         addAttributes() {
@@ -125,6 +135,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
       TableHeader,
       TableCell,
       Highlight.configure({ multicolor: true }),
+      CharacterCount.configure({ limit: null }),
       VideoNode,
       FileNode,
       Column,
@@ -133,7 +144,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
     content: value || '<p></p>',
     editorProps: {
       attributes: {
-        class: 'rich-content max-w-none min-h-[240px] px-5 py-4 focus:outline-none bg-background text-foreground transition-colors',
+        class: 'rich-content max-w-none min-h-[400px] px-8 py-10 focus:outline-none bg-background text-foreground transition-colors',
       },
     },
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
@@ -168,39 +179,15 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   };
 
-  const addImageFromUrl = () => {
-    const url = window.prompt("URL de l'image");
-    if (!url) return;
-    editor.chain().focus().setImage({ src: url }).run();
-  };
-
-  const uploadMedia = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append('files', file);
-    try {
-      const response = await api.post('/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      const media = response.data[0] || response.data?.[0];
-      if (media?.url) {
-        const src = media.url.startsWith('http')
-          ? media.url
-          : `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${media.url}`;
-        if (file.type.startsWith('image/')) {
-          editor.chain().focus().setImage({ src }).run();
-        } else if (file.type.startsWith('video/')) {
-          editor.chain().focus().insertVideo({ src }).run();
-        } else {
-          editor.chain().focus().insertFile({ src, name: file.name, size: `${(file.size / 1024).toFixed(1)} Ko` }).run();
-        }
-      }
-    } catch (err) {
-      console.error("Erreur upload", err);
-    } finally {
-      e.target.value = '';
+  const handleMediaSelect = (url: string, type: string) => {
+    if (type.startsWith('image/')) {
+      editor.chain().focus().setImage({ src: url }).run();
+    } else if (type.startsWith('video/')) {
+      editor.chain().focus().insertVideo({ src: url }).run();
+    } else {
+      editor.chain().focus().insertFile({ src: url, name: url.split('/').pop() || 'Fichier' }).run();
     }
+    setIsMediaManagerOpen(false);
   };
 
   const addYoutube = () => {
@@ -210,174 +197,172 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
   };
 
   return (
-    <div className={isFullscreen ? 'fixed inset-0 z-50 bg-background flex flex-col shadow-2xl' : 'border border-border rounded-xl overflow-hidden shadow-sm'}>
+    <div className={isFullscreen ? 'fixed inset-0 z-[250] bg-background flex flex-col shadow-2xl transition-colors' : 'border border-border rounded-[24px] overflow-hidden shadow-sm flex flex-col transition-colors bg-background'}>
 
       {/* ── Barre d'outils ── */}
-      <div className="bg-background-alt border-b border-border px-2 py-1.5 transition-colors">
+      <div className="bg-background-alt/50 backdrop-blur-md border-b border-border px-3 py-2 transition-colors sticky top-0 z-10">
 
         {/* Ligne 1 : Historique + Format texte + Alignement + Listes */}
-        <div className="flex flex-wrap items-center gap-0.5 mb-1">
+        <div className="flex flex-wrap items-center gap-1 mb-2">
 
           {/* Undo / Redo / Clear */}
           <ToolBtn onClick={() => editor.chain().focus().undo().run()} title="Annuler (Ctrl+Z)" className="disabled:opacity-50">
-            <Undo2 size={14} />
+            <Undo2 size={15} />
           </ToolBtn>
           <ToolBtn onClick={() => editor.chain().focus().redo().run()} title="Rétablir (Ctrl+Shift+Z)" className="disabled:opacity-50">
-            <Redo2 size={14} />
+            <Redo2 size={15} />
           </ToolBtn>
           <ToolBtn onClick={() => editor.chain().focus().clearNodes().unsetAllMarks().run()} title="Effacer le formatage">
-            <Eraser size={14} />
+            <Eraser size={15} />
           </ToolBtn>
 
           <Sep />
 
           {/* Styles de base */}
           <ToolBtn onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')} title="Gras (Ctrl+B)">
-            <Bold size={14} strokeWidth={2.5} />
+            <Bold size={15} strokeWidth={2.5} />
           </ToolBtn>
           <ToolBtn onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive('italic')} title="Italique (Ctrl+I)">
-            <Italic size={14} />
+            <Italic size={15} />
           </ToolBtn>
           <ToolBtn onClick={() => editor.chain().focus().toggleUnderline().run()} active={editor.isActive('underline')} title="Souligné (Ctrl+U)">
-            <UnderlineIcon size={14} />
+            <UnderlineIcon size={15} />
           </ToolBtn>
           <ToolBtn onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive('strike')} title="Barré">
-            <Strikethrough size={14} />
+            <Strikethrough size={15} />
           </ToolBtn>
           <ToolBtn onClick={() => editor.chain().focus().toggleHighlight({ color: '#fef08a' }).run()} active={editor.isActive('highlight')} title="Surligner">
-            <Highlighter size={14} />
+            <Highlighter size={15} />
           </ToolBtn>
 
           <Sep />
 
           {/* Titres */}
           <ToolBtn onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive('heading', { level: 2 })} title="Titre H2">
-            <Heading2 size={14} />
+            <Heading2 size={16} />
           </ToolBtn>
           <ToolBtn onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} active={editor.isActive('heading', { level: 3 })} title="Titre H3">
-            <Heading3 size={14} />
+            <Heading3 size={16} />
           </ToolBtn>
 
           <Sep />
 
           {/* Alignement */}
           <ToolBtn onClick={() => editor.chain().focus().setTextAlign('left').run()} active={editor.isActive({ textAlign: 'left' })} title="Aligner à gauche">
-            <AlignLeft size={14} />
+            <AlignLeft size={15} />
           </ToolBtn>
           <ToolBtn onClick={() => editor.chain().focus().setTextAlign('center').run()} active={editor.isActive({ textAlign: 'center' })} title="Centrer">
-            <AlignCenter size={14} />
+            <AlignCenter size={15} />
           </ToolBtn>
           <ToolBtn onClick={() => editor.chain().focus().setTextAlign('right').run()} active={editor.isActive({ textAlign: 'right' })} title="Aligner à droite">
-            <AlignRight size={14} />
+            <AlignRight size={15} />
           </ToolBtn>
           <ToolBtn onClick={() => editor.chain().focus().setTextAlign('justify').run()} active={editor.isActive({ textAlign: 'justify' })} title="Justifier">
-            <AlignJustify size={14} />
+            <AlignJustify size={15} />
           </ToolBtn>
 
           <Sep />
 
           {/* Listes */}
           <ToolBtn onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive('bulletList')} title="Liste à puces">
-            <List size={14} />
+            <List size={15} />
           </ToolBtn>
           <ToolBtn onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive('orderedList')} title="Liste numérotée">
-            <ListOrdered size={14} />
+            <ListOrdered size={15} />
           </ToolBtn>
           <ToolBtn onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive('blockquote')} title="Citation">
-            <Quote size={14} />
+            <Quote size={15} />
           </ToolBtn>
 
           <Sep />
 
           {/* Liens */}
           <ToolBtn onClick={setLink} active={editor.isActive('link')} title="Ajouter un lien">
-            <LinkIcon size={14} />
+            <LinkIcon size={15} />
           </ToolBtn>
           <ToolBtn onClick={() => editor.chain().focus().unsetLink().run()} title="Supprimer le lien">
-            <Unlink size={14} />
+            <Unlink size={15} />
           </ToolBtn>
 
           {/* Plein écran (tout à droite) */}
           <div className="ml-auto">
             <ToolBtn onClick={() => setIsFullscreen(v => !v)} title={isFullscreen ? 'Quitter le plein écran' : 'Plein écran'}>
-              {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+              {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
             </ToolBtn>
           </div>
         </div>
 
         {/* Ligne 2 : Couleurs + Taille médias + Médias + Colonnes */}
-        <div className="flex flex-wrap items-center gap-0.5">
+        <div className="flex flex-wrap items-center gap-1 text-[10px] font-bold">
 
           {/* Couleurs de texte */}
-          {[
-            { color: '#111827', label: 'Noir' },
-            { color: '#1d4ed8', label: 'Bleu' },
-            { color: '#b91c1c', label: 'Rouge' },
-            { color: '#047857', label: 'Vert' },
-            { color: '#7c3aed', label: 'Violet' },
-            { color: '#f59e0b', label: 'Orange' },
-          ].map(({ color, label }) => (
+          <div className="flex items-center gap-1.5 px-2">
+            {[
+              { color: '#111827', label: 'Noir' },
+              { color: '#1d4ed8', label: 'Bleu' },
+              { color: '#b91c1c', label: 'Rouge' },
+              { color: '#047857', label: 'Vert' },
+              { color: '#7c3aed', label: 'Violet' },
+              { color: '#f59e0b', label: 'Orange' },
+            ].map(({ color, label }) => (
+              <button
+                key={color}
+                type="button"
+                onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().setColor(color).run(); }}
+                className="w-4 h-4 rounded-full border border-border/50 ring-1 ring-border/20 hover:scale-125 transition-transform"
+                style={{ backgroundColor: color }}
+                title={`Couleur : ${label}`}
+              />
+            ))}
             <button
-              key={color}
               type="button"
-              onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().setColor(color).run(); }}
-              className="w-4 h-4 rounded-full border border-border ring-1 ring-border hover:scale-110 transition-transform"
-              style={{ backgroundColor: color }}
-              title={`Couleur : ${label}`}
-            />
-          ))}
-          <button
-            type="button"
-            onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().unsetColor().run(); }}
-            className="flex items-center justify-center w-6 h-6 rounded hover:bg-border text-foreground-muted"
-            title="Couleur par défaut"
-          >
-            <RefreshCw size={10} />
-          </button>
+              onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().unsetColor().run(); }}
+              className="flex items-center justify-center w-5 h-5 rounded hover:bg-border text-foreground-muted"
+              title="Couleur par défaut"
+            >
+              <RefreshCw size={11} />
+            </button>
+          </div>
 
           <Sep />
 
           {/* Taille médias */}
-          <span className="text-[10px] text-gray-400 mr-0.5">Taille :</span>
-          {[
-            { key: 'small', label: '25%' },
-            { key: 'medium', label: '50%' },
-            { key: 'large', label: '100%' },
-          ].map(({ key, label }) => (
-            <button
-              key={key}
-              type="button"
-              onMouseDown={(e) => {
-                e.preventDefault();
-                editor.chain().focus()
-                  .updateAttributes('image', { size: key })
-                  .updateAttributes('video', { size: key })
-                  .run();
-              }}
-              className="px-1.5 h-6 text-[10px] rounded border border-border bg-background hover:bg-background-alt text-foreground hover:text-primary transition-colors"
-              title={`Taille méida : ${label}`}
-            >
-              {label}
-            </button>
-          ))}
+          <div className="flex items-center gap-1 px-1">
+            <span className="text-[9px] text-foreground-muted uppercase tracking-tighter">Taille :</span>
+            {[
+              { key: 'small', label: '25%' },
+              { key: 'medium', label: '50%' },
+              { key: 'large', label: '100%' },
+            ].map(({ key, label }) => (
+              <button
+                key={key}
+                type="button"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  editor.chain().focus()
+                    .updateAttributes('image', { size: key })
+                    .updateAttributes('video', { size: key })
+                    .run();
+                }}
+                className="px-2 h-5 text-[9px] font-black rounded bg-background border border-border hover:bg-primary/5 hover:text-primary transition-all transition-colors"
+                title={`Taille média : ${label}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
 
           <Sep />
 
           {/* Médias */}
-          <ToolBtn onClick={addImageFromUrl} title="Image via URL">
-            <ImageIcon size={14} />
-          </ToolBtn>
-          <label className="flex items-center justify-center w-7 h-7 rounded text-foreground-muted hover:bg-border cursor-pointer transition-colors" title="Importer image ou vidéo depuis l'ordinateur">
-            <Video size={14} />
-            <input type="file" accept="image/*,video/*" className="hidden" onChange={uploadMedia} />
-          </label>
-          <ToolBtn onClick={addYoutube} title="Intégrer une vidéo YouTube">
-            <YoutubeIcon size={14} />
-          </ToolBtn>
-          <label className="flex items-center justify-center w-7 h-7 rounded text-foreground-muted hover:bg-border cursor-pointer transition-colors" title="Importer un document (PDF, Word…)">
-            <FileText size={14} />
-            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" className="hidden" onChange={uploadMedia} />
-          </label>
+          <div className="flex items-center gap-0.5">
+            <ToolBtn onClick={() => setIsMediaManagerOpen(true)} title="Ouvrir la Médiathèque" className="bg-primary/5 text-primary">
+              <FolderOpen size={16} />
+            </ToolBtn>
+            <ToolBtn onClick={addYoutube} title="Intégrer une vidéo YouTube">
+              <YoutubeIcon size={16} />
+            </ToolBtn>
+          </div>
 
           <Sep />
 
@@ -385,23 +370,16 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
           <ToolBtn
             onClick={() => editor.chain().focus().setColumns(2).run()}
             active={editor.isActive('columnBlock', { cols: 2 })}
-            title="2 colonnes côte à côte"
+            title="2 colonnes"
           >
-            <Columns2 size={14} />
+            <Columns2 size={16} />
           </ToolBtn>
           <ToolBtn
             onClick={() => editor.chain().focus().setColumns(3).run()}
             active={editor.isActive('columnBlock', { cols: 3 })}
-            title="3 colonnes côte à côte"
+            title="3 colonnes"
           >
-            <Columns3 size={14} />
-          </ToolBtn>
-
-          <Sep />
-
-          {/* Séparateur horizontal */}
-          <ToolBtn onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Ligne de séparation">
-            <Minus size={14} />
+            <Columns3 size={16} />
           </ToolBtn>
 
           <Sep />
@@ -411,47 +389,37 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
             onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
             title="Insérer un tableau"
           >
-            <TableIcon size={14} />
+            <TableIcon size={16} />
           </ToolBtn>
 
           {editor.isActive('table') && (
-            <div className="flex items-center gap-0.5 ml-1 pl-1 border-l border-border">
-              {/* Lignes */}
-              <ToolBtn onClick={() => editor.chain().focus().addRowBefore().run()} title="Ajouter ligne avant">
-                <ArrowUpToLine size={12} />
+            <div className="flex items-center gap-0.5 ml-1 pl-2 border-l border-border transition-colors">
+              <ToolBtn onClick={() => editor.chain().focus().addRowAfter().run()} title="Ajouter ligne">
+                <ArrowDownToLine size={13} />
               </ToolBtn>
-              <ToolBtn onClick={() => editor.chain().focus().addRowAfter().run()} title="Ajouter ligne après">
-                <ArrowDownToLine size={12} />
+              <ToolBtn onClick={() => editor.chain().focus().deleteRow().run()} title="Supprimer ligne" className="text-red-500 hover:bg-red-500/10">
+                <Minus size={13} />
               </ToolBtn>
-              <ToolBtn onClick={() => editor.chain().focus().deleteRow().run()} title="Supprimer la ligne">
-                <MinusSquare size={12} className="text-red-400" />
+              <div className="w-px h-3 bg-border mx-1" />
+              <ToolBtn onClick={() => editor.chain().focus().addColumnAfter().run()} title="Ajouter colonne">
+                <ArrowRightToLine size={13} />
               </ToolBtn>
-
-              <Sep />
-
-              {/* Colonnes */}
-              <ToolBtn onClick={() => editor.chain().focus().addColumnBefore().run()} title="Ajouter colonne avant">
-                <ArrowLeftToLine size={12} />
+              <ToolBtn onClick={() => editor.chain().focus().deleteColumn().run()} title="Supprimer colonne" className="text-red-500 hover:bg-red-500/10">
+                <Minus size={13} className="rotate-90" />
               </ToolBtn>
-              <ToolBtn onClick={() => editor.chain().focus().addColumnAfter().run()} title="Ajouter colonne après">
-                <ArrowRightToLine size={12} />
+              <div className="w-px h-3 bg-border mx-1" />
+              <ToolBtn onClick={() => editor.chain().focus().mergeCells().run()} title="Fusionner les cellules">
+                <Grid size={13} />
               </ToolBtn>
-              <ToolBtn onClick={() => editor.chain().focus().deleteColumn().run()} title="Supprimer la colonne">
-                <MinusSquare size={12} className="text-red-400" />
+              <ToolBtn onClick={() => editor.chain().focus().splitCell().run()} title="Diviser la cellule">
+                <Square size={13} />
               </ToolBtn>
-
-              <Sep />
-
-              <ToolBtn onClick={() => editor.chain().focus().toggleHeaderRow().run()} title="Activer/Désactiver l'en-tête">
-                <TableProperties size={12} />
+              <ToolBtn onClick={() => editor.chain().focus().toggleHeaderCell().run()} title="En-tête">
+                <TableProperties size={13} />
               </ToolBtn>
-
-              <ToolBtn
-                onClick={() => editor.chain().focus().deleteTable().run()}
-                title="Supprimer tout le tableau"
-                className="text-red-500 hover:text-red-600 hover:bg-red-50"
-              >
-                <Trash2 size={12} />
+              <div className="w-px h-3 bg-border mx-1" />
+              <ToolBtn onClick={() => editor.chain().focus().deleteTable().run()} title="Supprimer tableau" className="text-red-500 hover:bg-red-500/10">
+                <Trash2 size={13} />
               </ToolBtn>
             </div>
           )}
@@ -460,9 +428,34 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
       </div>
 
       {/* ── Zone de texte ── */}
-      <div className={isFullscreen ? 'flex-1 overflow-y-auto' : 'max-h-[70vh] overflow-y-auto'}>
+      <div className={`${isFullscreen ? 'flex-1 overflow-y-auto' : 'h-[600px] overflow-y-auto'} bg-background transition-colors`}>
         <EditorContent editor={editor} />
       </div>
+
+      {/* ── Barre de statut (Compteur) ── */}
+      <div className="bg-background-alt border-t border-border px-5 py-2.5 flex items-center justify-between text-[10px] font-black text-foreground-muted uppercase tracking-[0.2em] transition-colors">
+        <div className="flex items-center gap-6">
+          <span className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+            {editor.storage.characterCount.words()} MOTS
+          </span>
+          <span className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-foreground-muted/30" />
+            {editor.storage.characterCount.characters()} SIGNES
+          </span>
+        </div>
+        <div>
+          ONG IMPACT EDITOR v2.0
+        </div>
+      </div>
+
+      {/* Media Manager Modal */}
+      <MediaManager 
+        isOpen={isMediaManagerOpen} 
+        onClose={() => setIsMediaManagerOpen(false)} 
+        onSelect={handleMediaSelect} 
+        postId={postId}
+      />
     </div>
   );
 };

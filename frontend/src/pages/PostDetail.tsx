@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Clock, Calendar, Share2, Facebook, Twitter, Link as LinkIcon, ChevronRight, Eye } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Share2, Facebook, Twitter, Link as LinkIcon, ChevronRight, Eye, FileText } from 'lucide-react';
 import { usePost } from '../hooks/usePost';
 import DOMPurify from 'dompurify';
 import { Helmet } from 'react-helmet-async';
@@ -212,11 +212,21 @@ const PostDetail = () => {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {post.media.map((m) => (
-              <div key={m.id} className="aspect-[4/3] bg-background p-2 rounded-3xl shadow-sm border border-border overflow-hidden transform hover:-rotate-1 hover:scale-105 transition-all duration-500 cursor-zoom-in">
+              <div key={m.id} className="aspect-[4/3] bg-background p-2 rounded-3xl shadow-sm border border-border overflow-hidden transform hover:-rotate-1 hover:scale-105 transition-all duration-500 cursor-pointer flex flex-col items-center justify-center gap-3">
                 {m.type.startsWith('image/') ? (
                   <img src={m.url} alt="" loading="lazy" className="w-full h-full object-cover rounded-2xl" />
-                ) : (
+                ) : m.type.startsWith('video/') ? (
                   <video src={m.url} controls className="w-full h-full object-cover rounded-2xl" />
+                ) : (
+                  <a href={m.url} target="_blank" rel="noopener noreferrer" className="w-full h-full flex flex-col items-center justify-center p-6 text-center hover:bg-primary/5 transition-colors rounded-2xl group">
+                    <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                      <FileText size={32} />
+                    </div>
+                    <p className="mt-4 text-xs font-black uppercase tracking-widest text-foreground truncate max-w-full px-2">
+                      {m.url.split('/').pop() || 'Document'}
+                    </p>
+                    <span className="text-[10px] font-bold text-primary mt-1">Télécharger</span>
+                  </a>
                 )}
               </div>
             ))}

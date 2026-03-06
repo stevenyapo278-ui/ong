@@ -77,8 +77,8 @@ model Media {
   id        String   @id @default(uuid())
   url       String
   type      String   // e.g., 'image/jpeg', 'video/mp4'
-  postId    String
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String?
+  post      Post?     @relation(fields: [postId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 

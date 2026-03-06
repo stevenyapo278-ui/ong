@@ -246,6 +246,7 @@ body {
   margin: 0 !important;
   transition: border-color 0.2s ease;
   transform: translateZ(0);
+  overflow: hidden !important;
 }
 
 .column-node-view [data-node-view-content-react] {
@@ -359,8 +360,6 @@ body {
   border-width: 2px;
 }
 
-.rich-content table td p,
-.rich-content table th p,
 .ProseMirror table td p,
 .ProseMirror table th p {
   margin: 0;
@@ -380,4 +379,99 @@ body {
   background-color: var(--primary);
   pointer-events: none;
   z-index: 20;
+}
+
+/* ═══════════════════════════════════════════════
+   FILE NODE (DOWNLOAD BLOCKS)
+   ═══════════════════════════════════════════════ */
+
+.rich-content [data-type="file"],
+.ProseMirror [data-type="file"] {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 1.5rem 0 !important;
+  box-sizing: border-box !important;
+}
+
+.file-node-container * {
+  box-sizing: border-box !important;
+}
+
+.file-node-link {
+  display: flex !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  align-items: center !important;
+  gap: 1.25rem !important;
+  padding: 1.25rem !important;
+  background-color: var(--background-alt) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 1.25rem !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  color: var(--foreground) !important;
+  min-width: 0 !important;
+}
+
+.file-node-link:hover {
+  background-color: var(--background) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-4px);
+}
+
+.file-icon {
+  width: 3.5rem !important;
+  height: 3.5rem !important;
+  background-color: var(--primary-muted) !important;
+  color: var(--primary) !important;
+  border-radius: 1rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.4s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.file-node-link:hover .file-icon {
+  background-color: var(--primary) !important;
+  color: white !important;
+  transform: scale(1.05) !important;
+}
+
+.file-info {
+  flex: 1 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.file-name {
+  font-weight: 800 !important;
+  font-size: 0.95rem !important;
+  color: var(--foreground) !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  letter-spacing: -0.01em !important;
+  width: 100% !important;
+}
+
+.file-meta {
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  color: var(--foreground-muted) !important;
+  margin: 0.25rem 0 0 0 !important;
+  opacity: 0.8 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* Fix specificity for editor and various modes */
+.ProseMirror .file-node-link * {
+  text-decoration: none !important;
 }

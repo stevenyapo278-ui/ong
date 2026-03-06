@@ -3,8 +3,13 @@ import path from 'path';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const isVideo = file.mimetype.startsWith('video/');
-    cb(null, isVideo ? 'uploads/videos' : 'uploads/images');
+    if (file.mimetype.startsWith('video/')) {
+      cb(null, 'uploads/videos');
+    } else if (file.mimetype.startsWith('image/')) {
+      cb(null, 'uploads/images');
+    } else {
+      cb(null, 'uploads/docs');
+    }
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname.replace(/\s+/g, '_')}`);
@@ -12,11 +17,20 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req: any, file: any, cb: any) => {
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/quicktime'];
+  const allowedTypes = [
+    'image/jpeg', 'image/png', 'image/webp', 'image/gif',
+    'video/mp4', 'video/quicktime', 'video/webm',
+    'application/pdf', 
+    'application/msword', 
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'text/plain'
+  ];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Type de fichier non supporté. Seuls les images (JPEG, PNG, WEBP) et vidéos (MP4, MOV) sont acceptés.'), false);
+    cb(new Error('Type de fichier non supporté. Images, vidéos et documents (PDF, Word, Excel, TXT) sont acceptés.'), false);
   }
 };
 

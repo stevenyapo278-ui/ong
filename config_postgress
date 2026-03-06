@@ -1,0 +1,39 @@
+Ran command: `PGPASSWORD='ong_password' psql -h localhost -U ong_user -d ong_db -c "SELECT 1;"`
+Ran command: `cat /home/styapo/Projet/ong/backend/.env`
+
+L'erreur `P1010` et le message `FATAL: Échec de l'authentification Ident` indiquent que PostgreSQL essaie d'utiliser votre nom d'utilisateur système (celui de votre session) au lieu du mot de passe pour s'authentifier. C'est un réglage par défaut courant sur Fedora.
+
+Voici comment corriger cela :
+
+### 1. Modifier le fichier `.env`
+Changez `localhost` par `127.0.0.1` dans votre `DATABASE_URL`. Cela force PostgreSQL à utiliser l'authentification par mot de passe (TCP/IP) plutôt que l'authentification système (Socket Unix/Ident).
+
+Modifiez votre fichier [/home/styapo/Projet/ong/backend/.env](cci:7://file:///home/styapo/Projet/ong/backend/.env:0:0-0:0) comme ceci :
+```env
+DATABASE_URL="postgresql://ong_user:ong_password@127.0.0.1:5432/ong_db?schema=public"
+# ... reste du fichier
+```
+
+### 2. Réessayer les commandes Prisma
+Une fois le fichier `.env` sauvegardé, relancez les commandes :
+
+```bash
+cd /home/styapo/Projet/ong/backend
+npx prisma migrate dev --name init
+npm run reset-admin:seed
+```
+
+---
+
+### Si cela ne fonctionne toujours pas (Optionnel : Configurer Postgres)
+Si l'erreur persiste, il est possible que PostgreSQL refuse les connexions par mot de passe même sur `127.0.0.1`. Vous pouvez temporairement autoriser toutes les connexions locales en "trust" (pour le développement) :
+
+1.  Ouvrez le fichier de configuration (le chemin peut varier selon la version, ici pour PG 16 ou 17) :
+    `sudo nano /var/lib/pgsql/data/pg_hba.conf`
+2.  Cherchez la ligne :
+    `host    all             all             127.0.0.1/32            ident`
+3.  Remplacez `ident` par `md5` ou `scram-sha-256` (ou `trust` pour ne plus demander de mot de passe du tout en local).
+4.  Redémarrez PostgreSQL :
+    `sudo systemctl restart postgresql`
+
+**Essaie d'abord le changement vers `127.0.0.1` dans le `.env`, c'est généralement suffisant !**

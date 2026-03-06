@@ -10,7 +10,8 @@ import {
   CheckCircle,
   X,
   Plus,
-  AlertCircle
+  AlertCircle,
+  FileText
 } from 'lucide-react';
 import api from '../api/axios';
 import { usePostById } from '../hooks/usePostById';
@@ -228,7 +229,7 @@ const EditPost = () => {
 
             {/* Editor Area */}
             <div className="relative min-h-[500px]">
-              <RichTextEditor value={content} onChange={setContent} />
+              <RichTextEditor value={content} onChange={setContent} postId={id} />
             </div>
           </div>
         </div>
@@ -319,6 +320,41 @@ const EditPost = () => {
                 <span className="text-foreground">{post.author?.name || 'Administrateur'}</span>
               </div>
             </div>
+
+            {/* Attached Media Section */}
+            {post.media && post.media.length > 0 && (
+              <div className="pt-6 border-t border-border space-y-4">
+                <label className="flex items-center gap-2 text-[10px] font-black text-foreground-muted uppercase tracking-widest transition-colors">
+                  <FileText size={14} /> Médias & Documents Liés
+                </label>
+                <div className="grid grid-cols-1 gap-2">
+                  {post.media.map((m) => (
+                    <div key={m.id} className="group flex items-center gap-3 p-3 bg-background-alt border border-border rounded-xl hover:border-primary transition-all">
+                      <div className="w-10 h-10 rounded-lg overflow-hidden bg-background border border-border shrink-0 flex items-center justify-center">
+                        {m.type.startsWith('image/') ? (
+                          <img src={m.url} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <FileText size={18} className="text-primary" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-width-0">
+                        <p className="text-[10px] font-bold text-foreground truncate">{m.url.split('/').pop()}</p>
+                        <p className="text-[9px] text-foreground-muted uppercase">{m.type.split('/')[1]}</p>
+                      </div>
+                      <a 
+                        href={m.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="opacity-0 group-hover:opacity-100 p-2 text-primary hover:bg-primary/10 rounded-lg transition-all"
+                        title="Ouvrir/Télécharger"
+                      >
+                        <Plus size={14} className="rotate-45" />
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
           </div>
 

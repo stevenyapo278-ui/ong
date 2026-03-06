@@ -19,12 +19,18 @@ const FileNode = Node.create({
     return {
       src: {
         default: null,
+        parseHTML: el => el.getAttribute('data-src') || el.getAttribute('href') || el.getAttribute('src'),
+        renderHTML: attrs => ({ 'data-src': attrs.src }),
       },
       name: {
         default: 'Fichier',
+        parseHTML: el => el.getAttribute('data-name') || el.getAttribute('name'),
+        renderHTML: attrs => ({ 'data-name': attrs.name }),
       },
       size: {
         default: '',
+        parseHTML: el => el.getAttribute('data-size') || el.getAttribute('size'),
+        renderHTML: attrs => ({ 'data-size': attrs.size }),
       },
     };
   },
@@ -32,36 +38,50 @@ const FileNode = Node.create({
   parseHTML() {
     return [
       {
-        tag: 'a[data-type="file"]',
+        tag: 'div[data-type="file"]',
+        priority: 100,
       },
+      // Fallback pour les anciens formats ou les copier/coller
+      {
+        tag: 'a[data-type="file"]',
+        priority: 100,
+      }
     ];
   },
 
   renderHTML({ HTMLAttributes }) {
-    const name = HTMLAttributes.name || 'Fichier';
-    const size = HTMLAttributes.size ? ` (${HTMLAttributes.size})` : '';
+    const name = HTMLAttributes['data-name'] || 'Fichier';
+    const size = HTMLAttributes['data-size'] ? ` (${HTMLAttributes['data-size']})` : '';
+    const src = HTMLAttributes['data-src'] || '#';
 
     return [
-      'a',
+      'div',
       mergeAttributes(HTMLAttributes, {
         'data-type': 'file',
-        class: 'flex items-center gap-3 p-4 bg-background-alt border border-border rounded-xl hover:bg-background transition-colors no-underline text-foreground group',
-        target: '_blank',
-        href: HTMLAttributes.src,
+        class: 'file-node-container',
       }),
       [
-        'div',
-        { class: 'w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors' },
-        ['svg', { xmlns: 'http://www.w3.org/2000/svg', width: '20', height: '20', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' },
-          ['path', { d: 'M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z' }],
-          ['polyline', { points: '14 2 14 8 20 8' }]
+        'a',
+        { 
+          href: src, 
+          target: '_blank', 
+          rel: 'noopener noreferrer',
+          class: 'file-node-link'
+        },
+        [
+          'div',
+          { class: 'file-icon' },
+          ['svg', { xmlns: 'http://www.w3.org/2000/svg', width: '24', height: '24', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' },
+            ['path', { d: 'M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z' }],
+            ['polyline', { points: '14 2 14 8 20 8' }]
+          ]
+        ],
+        [
+          'div',
+          { class: 'file-info' },
+          ['p', { class: 'file-name' }, name],
+          ['p', { class: 'file-meta' }, `Document${size} · Cliquez pour découvrir`]
         ]
-      ],
-      [
-        'div',
-        { class: 'flex-1 overflow-hidden' },
-        ['p', { class: 'text-sm font-semibold truncate text-foreground' }, name],
-        ['p', { class: 'text-xs text-foreground-muted' }, `Document${size} · Cliquez pour ouvrir`]
       ]
     ];
   },

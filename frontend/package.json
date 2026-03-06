@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@tanstack/react-query": "^5.90.21",
+    "@tiptap/extension-character-count": "^3.20.1",
     "@tiptap/extension-color": "^3.20.0",
     "@tiptap/extension-heading": "^3.20.0",
     "@tiptap/extension-highlight": "^3.20.0",
