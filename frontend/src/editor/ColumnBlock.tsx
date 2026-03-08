@@ -62,6 +62,11 @@ const ColumnBlock = Node.create({
         const { selection } = state;
         const { $from } = selection;
 
+        // Si on est dans un tableau, on laisse l'extension de tableau gérer la tabulation
+        if (this.editor.isActive('table')) {
+          return false;
+        }
+
         // On cherche si on est dans une colonne
         let columnNode = null;
         let columnPos = -1;
@@ -104,6 +109,10 @@ const ColumnBlock = Node.create({
         const { state } = this.editor;
         const { selection } = state;
         const { $from } = selection;
+
+        if (this.editor.isActive('table')) {
+          return false;
+        }
 
         let columnPos = -1;
         for (let d = $from.depth; d > 0; d--) {

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../prisma';
 import { AuthRequest } from './types';
 import { inferPostTypeFromHtml } from '../utils/postType';
+import { sendNewsNotificationEmail } from '../utils/email';
 
 function slugify(input: string): string {
   return input
@@ -130,6 +131,7 @@ export const getPosts = async (req: Request, res: Response) => {
           author: { select: { name: true, email: true } },
           categories: true,
           media: true,
+          comments: true,
         },
         orderBy: { createdAt: 'desc' },
         skip: (pageNumber - 1) * sizeNumber,
@@ -153,8 +155,9 @@ export const getPostById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    const post = await prisma.post.findUnique({
+    const post = await prisma.post.update({
       where: { id },
+      data: { viewCount: { increment: 1 } },
       include: {
         author: { select: { name: true, email: true } },
         categories: true,
@@ -176,8 +179,9 @@ export const getPostBySlug = async (req: Request, res: Response) => {
   try {
     const { slug } = req.params;
 
-    const post = await prisma.post.findUnique({
+    const post = await prisma.post.update({
       where: { slug },
+      data: { viewCount: { increment: 1 } },
       include: {
         author: { select: { name: true, email: true } },
         categories: true,
@@ -265,6 +269,23 @@ export const validatePost = async (req: AuthRequest, res: Response) => {
       where: { id },
       data,
     });
+
+    // Envoyer newsletter si l'article est publié
+    if (status === 'PUBLISHED') {
+      try {
+        const subscribers = await prisma.subscriber.findMany();
+        const siteUrl = process.env.SITE_URL || 'https://ongbienvivreici.org';
+        const postUrl = `${siteUrl}/actualites/${post.slug}`;
+        
+        // On ne bloque pas la réponse HTTP pour l'envoi des mails (async)
+        Promise.all(subscribers.map(sub => 
+          sendNewsNotificationEmail(sub.email, post.title, post.excerpt || '', postUrl)
+        )).catch(err => console.error('Erreur envoi massif actualités:', err));
+        
+      } catch (err) {
+        console.error('Erreur newsletter déclenchement:', err);
+      }
+    }
 
     res.json(post);
   } catch (error) {

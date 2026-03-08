@@ -99,6 +99,17 @@ const ToolBtn = ({
 
 // Extensions mémoisées en dehors du composant pour éviter les doublons et les re-rendus
 const EDITOR_EXTENSIONS = [
+  Table.configure({ resizable: true }).extend({
+    addKeyboardShortcuts() {
+      return {
+        Tab: () => this.editor.can().goToNextCell() ? this.editor.commands.goToNextCell() : false,
+        'Shift-Tab': () => this.editor.can().goToPreviousCell() ? this.editor.commands.goToPreviousCell() : false,
+      };
+    },
+  }),
+  TableRow,
+  TableHeader,
+  TableCell,
   StarterKit.configure({ heading: false, link: false }),
   Heading.configure({ levels: [2, 3] }),
   TextStyle,
@@ -129,17 +140,6 @@ const EDITOR_EXTENSIONS = [
     },
   }),
   Youtube.configure({ controls: true }),
-  Table.configure({ resizable: true }).extend({
-    addKeyboardShortcuts() {
-      return {
-        Tab: () => this.editor.can().goToNextCell() ? this.editor.commands.goToNextCell() : false,
-        'Shift-Tab': () => this.editor.can().goToPreviousCell() ? this.editor.commands.goToPreviousCell() : false,
-      };
-    },
-  }),
-  TableRow,
-  TableHeader,
-  TableCell,
   Highlight.configure({ multicolor: true }),
   CharacterCount.configure({ limit: null }),
   Underline,

@@ -27,16 +27,16 @@ export const ColumnView = ({ node, deleteNode }: NodeViewProps) => {
           deleteNode();
         }}
         style={{
-          position: 'absolute', top: '-10px', right: '-10px', width: '22px', height: '22px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%',
-          background: 'var(--background)', color: '#ef4444', border: '1px solid var(--border)',
-          cursor: 'pointer', zIndex: 10, transition: 'all 0.2s ease',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          position: 'absolute', top: '-15px', right: '-15px', width: '30px', height: '30px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '10px',
+          background: '#ef4444', color: 'white', border: '3px solid white',
+          cursor: 'pointer', zIndex: 100, transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: '0 8px 16px rgba(239, 68, 68, 0.4)'
         }}
-        className="column-delete-btn hover:bg-red-500 hover:text-white"
+        className="column-delete-btn hover:scale-110 hover:bg-red-600 active:scale-90"
         title="Supprimer cette colonne"
       >
-        <X size={12} />
+        <X size={16} strokeWidth={3} />
       </button>
 
       <NodeViewContent

@@ -8,6 +8,7 @@
   --color-foreground: var(--foreground);
   --color-foreground-muted: var(--foreground-muted);
   --color-border: var(--border);
+  --color-accent-blue: var(--accent-blue);
 }
 
 :root {
@@ -15,13 +16,15 @@
   line-height: 1.5;
   font-weight: 400;
 
-  --primary: #4f46e5;
-  --primary-muted: rgba(79, 70, 229, 0.1);
-  --secondary: #3b82f6;
+  --primary: #007D37; /* Green from logo */
+  --primary-muted: rgba(0, 125, 55, 0.1);
+  --secondary: #F18700; /* Orange from logo */
+  --accent-blue: #1A539B; /* Blue from logo */
   --foreground: #111827;
   --foreground-muted: #4b5563;
   --background: #ffffff;
-  --background-alt: #f8fafc;
+  --background-alt: #f1f5f9; /* Slate 100 - Un peu plus "sombre" que f8fafc */
+  --background-canvas: #e2e8f0; /* Slate 200 - Pour une distinction forte en mode edit */
   --border: #e2e8f0;
 }
 
@@ -30,10 +33,11 @@
   --foreground-muted: #9ca3af;
   --background: #0f172a;
   --background-alt: #1e293b;
+  --background-canvas: #020617;
   --border: #334155;
-  --primary: #818cf8;
-  --primary-muted: rgba(129, 140, 248, 0.2);
-  --secondary: #60a5fa;
+  --primary: #10b981;
+  --primary-muted: rgba(16, 185, 129, 0.2);
+  --secondary: #fb923c;
 }
 
 body {
@@ -233,29 +237,31 @@ body {
   margin: 3rem 0 !important;
   align-items: stretch !important;
   isolation: isolate;
-  overflow: visible !important;
 }
 
 /* Fix : Le wrapper interne de Tiptap dans l'éditeur doit être invisible pour la grille */
-.column-block-grid>[data-node-view-content-react] {
+.column-block-grid > [data-node-view-content-react],
+.column-block-grid > div {
   display: contents !important;
 }
 
-/* RENDU PUBLIC : Chaque colonne est un item de grille proprement dit */
-.rich-content [data-type="column"] {
+/* RENDU PUBLIC ET ÉDITEUR : Item de grille */
+.rich-content [data-type="column"],
+.ProseMirror .node-column {
   display: flex !important;
   flex-direction: column !important;
   width: 100% !important;
   height: 100% !important;
   min-height: 50px;
+  min-width: 0; /* Important pour éviter les débordements dans la grille */
 }
-
 
 .ProseMirror .node-columnBlock .column-block-grid {
   background: var(--background-alt);
   padding: 24px !important;
   border-radius: 12px;
   border: 1px solid var(--border);
+  box-sizing: border-box;
 }
 
 .ProseMirror .column-node-view {
@@ -267,7 +273,7 @@ body {
   margin: 0 !important;
   transition: border-color 0.2s ease;
   transform: translateZ(0);
-  overflow: hidden !important;
+  overflow: visible !important; /* Important : pour ne pas cacher le bouton de suppression */
 }
 
 .column-node-view [data-node-view-content-react] {
@@ -277,11 +283,23 @@ body {
   overflow: visible !important;
 }
 
-.ProseMirror .node-columnBlock>[data-node-view-wrapper],
-.ProseMirror .column-node-view>[data-node-view-wrapper] {
+/* Assurer que les wrappers React de Tiptap ne bloquent pas le layout */
+.ProseMirror .node-columnBlock,
+.ProseMirror .node-column {
   width: 100% !important;
-  display: flex !important;
   height: 100% !important;
+}
+
+.ProseMirror .node-columnBlock > [data-node-view-wrapper] {
+  width: 100% !important;
+  display: block !important; /* Pas de flex ici pour éviter le rétrécissement des enfants */
+}
+
+.ProseMirror .column-node-view {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 .column-node-view [data-node-view-content-react]>* {

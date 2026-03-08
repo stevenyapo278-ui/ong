@@ -154,7 +154,7 @@ const EditPost = () => {
   if (!post) return null;
 
   return (
-    <div className="fixed inset-0 bg-background-alt z-[150] flex flex-col font-sans overflow-hidden transition-colors">
+    <div className="fixed inset-0 bg-[var(--background-canvas)] z-[150] flex flex-col font-sans overflow-hidden transition-colors">
 
       {/* ── Header Ultra-Moderne ── */}
       <header className="h-20 bg-background/80 backdrop-blur-xl border-b border-border px-6 flex items-center justify-between shrink-0 z-20 transition-colors">
@@ -373,7 +373,7 @@ const EditPost = () => {
       {/* ── Footer / Info Bar ── */}
       <footer className="h-10 bg-background border-t border-border px-6 flex items-center justify-between shrink-0 text-[9px] font-black text-foreground-muted uppercase tracking-[0.2em] transition-colors">
         <div className="flex items-center gap-6">
-          <span>ONG IMPACT PLATFORM v2.0</span>
+          <span>ONG BIEN VIVRE ICI PLATFORM v2.0</span>
           <div className="flex items-center gap-2 text-primary">
             <div className="w-1.5 h-1.5 bg-primary rounded-full animate-ping" />
             SÉCURISÉ & SYNCHRONISÉ

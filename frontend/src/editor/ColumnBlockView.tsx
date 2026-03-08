@@ -9,6 +9,10 @@ export const ColumnBlockView = ({ node, editor, getPos, updateAttributes, delete
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Détection si la sélection est à l'intérieur de ce bloc
+  const isSelectionInside = editor.state.selection.from >= getPos() && 
+                            editor.state.selection.to <= getPos() + node.nodeSize;
+
   const template = node.attrs.template || '1fr 1fr';
   const resizeMode = node.attrs.resizeMode || 'linked';
 
@@ -35,7 +39,8 @@ export const ColumnBlockView = ({ node, editor, getPos, updateAttributes, delete
 
   const hide = () => {
     if (isResizing) return;
-    hideTimer.current = setTimeout(() => setVisible(false), 800);
+    // On augmente le délai pour laisser plus de temps à l'utilisateur
+    hideTimer.current = setTimeout(() => setVisible(false), 1500);
   };
 
   const getWidths = () => {
@@ -174,10 +179,12 @@ export const ColumnBlockView = ({ node, editor, getPos, updateAttributes, delete
       onMouseEnter={show}
       onMouseLeave={hide}
       ref={containerRef}
-      className={`column-block-wrapper ${visible ? 'is-visible' : ''} ${isResizing ? 'is-resizing' : ''}`}
+      className={`column-block-wrapper ${(visible || isSelectionInside) ? 'is-visible' : ''} ${isResizing ? 'is-resizing' : ''}`}
       style={{
         position: 'relative',
         margin: '4rem 0',
+        paddingTop: '60px', // Création d'une zone tampon pour le hover
+        marginTop: 'calc(4rem - 60px)',
         width: '100%',
         userSelect: isResizing ? 'none' : 'auto',
         WebkitUserSelect: isResizing ? 'none' : 'auto'
@@ -185,15 +192,17 @@ export const ColumnBlockView = ({ node, editor, getPos, updateAttributes, delete
     >
       {/* Barre d'outils style "Pill" */}
       <div
+        className="column-block-toolbar"
         contentEditable={false}
         style={{
-          position: 'absolute', top: '-54px', left: '50%', transform: 'translateX(-50%)',
-          display: 'flex', alignItems: 'center', gap: '4px', zIndex: 1000,
-          opacity: visible ? 1 : 0, transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          position: 'absolute', top: '0px', left: '50%', transform: 'translateX(-50%)',
+          display: 'flex', alignItems: 'center', gap: '6px', zIndex: 1000,
+          opacity: (visible || isSelectionInside) ? 1 : 0, 
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           background: 'var(--background)', backdropFilter: 'blur(8px)',
-          padding: '4px 8px', borderRadius: '12px', border: '1px solid var(--border)',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-          pointerEvents: visible ? 'auto' : 'none'
+          padding: '6px 12px', borderRadius: '16px', border: '2px solid var(--primary)',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.08)',
+          pointerEvents: (visible || isSelectionInside) ? 'auto' : 'none'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0 8px', borderRight: '1px solid var(--border)', marginRight: '4px' }}>
@@ -240,7 +249,7 @@ export const ColumnBlockView = ({ node, editor, getPos, updateAttributes, delete
         <NodeViewContent className="column-block-grid" />
 
         {/* Resizer Handles (Positionnés en pourcentage) */}
-        {visible && !isResizing && node.childCount > 1 && (
+        {(visible || isSelectionInside) && !isResizing && node.childCount > 1 && (
           <div style={{
             position: 'absolute', top: 0, left: '24px', right: '24px', height: '100%',
             pointerEvents: 'none', zIndex: 100
@@ -252,27 +261,35 @@ export const ColumnBlockView = ({ node, editor, getPos, updateAttributes, delete
                 style={{
                   position: 'absolute',
                   top: 0,
-                  left: `calc(${pos}% + ${i * 24}px)`, // On compense les gaps de 24px
-                  width: '24px',
+                  left: `${pos}%`, // Centrage parfait sur la division proportionnelle
+                  width: '32px', // Zone de clic généreuse
                   height: '100%',
-                  marginLeft: '-12px',
+                  transform: 'translateX(-50%)',
                   cursor: 'col-resize',
                   pointerEvents: 'auto',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  zIndex: 100
                 }}
               >
-                <div style={{
-                  background: 'var(--primary)',
-                  borderRadius: '6px',
-                  padding: '6px',
-                  color: 'white',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)',
-                  transition: 'transform 0.2s ease',
-                  transform: 'scale(1)'
-                }} className="resize-handle">
-                  <GripVertical size={16} />
+                <div 
+                  className="resize-handle"
+                  style={{
+                    background: 'var(--primary)', // Retour au vert de la marque
+                    borderRadius: '20px',
+                    width: '6px',
+                    height: '60px',
+                    color: 'white',
+                    boxShadow: '0 10px 15px -3px rgba(0, 125, 55, 0.3)',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '2px solid white'
+                  }}
+                >
+                  <GripVertical size={10} strokeWidth={4} />
                 </div>
               </div>
             ))}

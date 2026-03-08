@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Search, FileEdit, Trash2, Clock, CheckCircle, AlertCircle, Hourglass, Eye, LayoutGrid, Users, Settings, ChevronRight, Loader2, Tag, Mail, Copy, Send, XCircle } from 'lucide-react';
+import { Plus, Search, FileEdit, Trash2, Clock, CheckCircle, AlertCircle, Hourglass, Eye, LayoutGrid, Users, Settings, ChevronRight, Loader2, Tag, Mail, Copy, Send, XCircle, Target as TargetIcon, MessageSquare } from 'lucide-react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { formatPostType } from '../utils/post';
@@ -126,6 +126,10 @@ const Dashboard = () => {
     });
   }, [posts, statusFilter, searchQuery, authorSearch, startDate, endDate]);
 
+  const totalViews = useMemo(() => {
+    return posts.reduce((acc, post) => acc + (post.viewCount || 0), 0);
+  }, [posts]);
+
   return (
     <div className="space-y-10 py-6 max-w-7xl mx-auto px-4 md:px-0">
 
@@ -182,25 +186,80 @@ const Dashboard = () => {
       {activeTab === 'posts' && (
         <div className="space-y-12 animate-in fade-in slide-in-from-bottom duration-500">
           {/* ── Stats Panels ── */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
             <div className="bg-background p-8 rounded-[30px] shadow-sm border border-border group hover:border-primary/30 transition-all cursor-default">
-              <p className="text-xs font-black text-foreground-muted uppercase tracking-widest transition-colors">Total Récits</p>
+              <p className="text-xs font-black text-foreground-muted uppercase tracking-widest transition-colors">Vues Totales</p>
               <div className="flex items-end justify-between mt-4">
-                <p className="text-4xl font-black text-foreground leading-none transition-colors">{posts.length}</p>
-                <div className="w-10 h-10 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform"><Plus size={20} /></div>
+                <p className="text-4xl font-black text-primary leading-none transition-colors">{totalViews.toLocaleString()}</p>
+                <div className="w-10 h-10 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform"><Eye size={20} /></div>
               </div>
             </div>
             <div className="bg-background p-8 rounded-[30px] shadow-sm border border-border transition-colors">
-              <p className="text-xs font-black text-foreground-muted uppercase tracking-widest transition-colors">En Brouillon</p>
+              <p className="text-xs font-black text-foreground-muted uppercase tracking-widest transition-colors">Total Récits</p>
+              <p className="text-4xl font-black text-foreground mt-4 leading-none transition-colors">{posts.length}</p>
+            </div>
+            <div className="bg-background p-8 rounded-[30px] shadow-sm border border-border transition-colors">
+              <p className="text-xs font-black text-foreground-muted uppercase tracking-widest transition-colors">Brouillons</p>
               <p className="text-4xl font-black text-amber-500 mt-4 leading-none transition-colors">{posts.filter(p => p.status === 'DRAFT').length}</p>
             </div>
             <div className="bg-background p-8 rounded-[30px] shadow-sm border border-border transition-colors">
-              <p className="text-xs font-black text-foreground-muted uppercase tracking-widest transition-colors">Attente de validation</p>
-              <p className="text-4xl font-black text-primary mt-4 leading-none transition-colors">{posts.filter(p => p.status === 'PENDING').length}</p>
+              <p className="text-xs font-black text-foreground-muted uppercase tracking-widest transition-colors">Attente</p>
+              <p className="text-4xl font-black text-accent-blue mt-4 leading-none transition-colors">{posts.filter(p => p.status === 'PENDING').length}</p>
             </div>
             <div className="bg-background p-8 rounded-[30px] shadow-sm border border-border transition-colors">
-              <p className="text-xs font-black text-foreground-muted uppercase tracking-widest transition-colors">Publiés / Publics</p>
+              <p className="text-xs font-black text-foreground-muted uppercase tracking-widest transition-colors">Publiés</p>
               <p className="text-4xl font-black text-green-500 mt-4 leading-none transition-colors">{posts.filter(p => p.status === 'PUBLISHED').length}</p>
+            </div>
+          </div>
+
+          {/* ── Insights & Top Content ── */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 bg-background p-10 rounded-[40px] border border-border shadow-sm">
+              <div className="flex items-center justify-between mb-8">
+                <h3 className="text-sm font-black text-foreground uppercase tracking-[0.2em]">Performances des Récits</h3>
+                <span className="text-[10px] font-bold text-foreground-muted px-3 py-1 bg-background-alt rounded-lg border border-border">TOP 3 VUES</span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[...posts].sort((a,b) => (b.viewCount || 0) - (a.viewCount || 0)).slice(0, 3).map((p, i) => (
+                  <div key={i} className="p-6 bg-background-alt rounded-3xl border border-border/40 hover:border-primary/30 transition-all group">
+                    <div className="text-[10px] font-black text-primary mb-3">#{i+1} ARTICLES</div>
+                    <div className="font-black text-sm text-foreground line-clamp-2 mb-4 h-10">{p.title}</div>
+                    <div className="flex items-center gap-2">
+                       <div className="flex items-center gap-1 px-2 py-1 bg-primary/10 rounded-lg text-primary text-[10px] font-black">
+                         <Eye size={12} /> {p.viewCount || 0}
+                       </div>
+                       <div className="flex items-center gap-1 px-2 py-1 bg-secondary/10 rounded-lg text-secondary text-[10px] font-black">
+                         <MessageSquare size={12} /> {p.comments?.length || 0}
+                       </div>
+                    </div>
+                  </div>
+                ))}
+                {posts.length === 0 && (
+                   <div className="col-span-3 text-center py-6 opacity-40 italic text-xs">Aucune donnée disponible</div>
+                )}
+              </div>
+            </div>
+
+            <div className="bg-primary p-1 rounded-[40px] overflow-hidden shadow-xl shadow-primary/20 relative">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
+               <div className="relative z-10 p-10 h-full flex flex-col justify-between">
+                  <div className="space-y-4">
+                    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white">
+                      <TargetIcon size={24} />
+                    </div>
+                    <h3 className="text-white font-black text-xl leading-tight">Objectif d'Impact</h3>
+                    <p className="text-white/70 text-sm font-medium leading-relaxed">Vos publications renforcent la confiance des donateurs et de la communauté.</p>
+                  </div>
+                  <div className="pt-8 border-t border-white/10">
+                     <div className="flex items-center justify-between">
+                        <span className="text-white/60 text-[10px] font-black uppercase tracking-widest">Score de Transparence</span>
+                        <span className="text-white font-black text-lg">94%</span>
+                     </div>
+                     <div className="h-1.5 w-full bg-white/10 rounded-full mt-2 overflow-hidden">
+                        <div className="h-full bg-secondary w-[94%]" />
+                     </div>
+                  </div>
+               </div>
             </div>
           </div>
 
@@ -308,6 +367,8 @@ const Dashboard = () => {
                         <th className="px-10 py-6">Mission / Récit</th>
                         <th className="px-6 py-6">Catégorie</th>
                         <th className="px-6 py-6">État</th>
+                        <th className="px-6 py-6">Engagement</th>
+                        <th className="px-6 py-6">Vues</th>
                         <th className="px-6 py-6">Date</th>
                         <th className="px-10 py-6 text-right">Contrôles</th>
                       </tr>
@@ -330,6 +391,16 @@ const Dashboard = () => {
                             </td>
                             <td className="px-6 py-8">
                               {getStatusBadge(post.status)}
+                            </td>
+                            <td className="px-6 py-8">
+                              <span className="flex items-center gap-1.5 font-bold text-foreground">
+                                <MessageSquare size={14} className="text-secondary" /> {post.comments?.length || 0}
+                              </span>
+                            </td>
+                            <td className="px-6 py-8">
+                              <span className="flex items-center gap-1.5 font-bold text-foreground">
+                                <Eye size={14} className="text-primary" /> {post.viewCount || 0}
+                              </span>
                             </td>
                             <td className="px-6 py-8 text-sm text-foreground-muted font-medium transition-colors">
                               {new Date(post.publishedAt || post.createdAt).toLocaleDateString()}

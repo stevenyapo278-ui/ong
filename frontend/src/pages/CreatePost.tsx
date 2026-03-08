@@ -92,7 +92,7 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="fixed inset-0 bg-background-alt z-[200] flex flex-col font-sans overflow-hidden transition-colors">
+    <div className="fixed inset-0 bg-[var(--background-canvas)] z-[200] flex flex-col font-sans overflow-hidden transition-colors">
 
       {/* ── Header Ultra-Moderne ── */}
       <header className="h-24 bg-background/80 backdrop-blur-xl border-b border-border px-8 flex items-center justify-between shrink-0 z-30 transition-colors">
@@ -282,7 +282,7 @@ const CreatePost = () => {
             ÉDITEUR EN LIGNE
           </span>
           <div className="h-4 w-px bg-border" />
-          <span>ONG IMPACT WORKSTATION</span>
+          <span>ONG BIEN VIVRE ICI WORKSTATION</span>
         </div>
         <div className="flex items-center gap-10">
           <span>MODÈLE : RÉCIT STANDARD</span>
