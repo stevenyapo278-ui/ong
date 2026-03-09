@@ -11,6 +11,9 @@ import PostDetail from './pages/PostDetail';
 import ForceChangePassword from './pages/ForceChangePassword';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import DonorsSpace from './pages/DonorsSpace';
+import PartnersSpace from './pages/PartnersSpace';
+import ScrollToTop from './components/ScrollToTop';
 import { useAuth } from './context/AuthContext';
 
 const ProtectedRoute: React.FC<{ children: React.ReactElement }> = ({ children }) => {
@@ -39,8 +42,11 @@ const ProtectedRoute: React.FC<{ children: React.ReactElement }> = ({ children }
 function App() {
   return (
     <Layout>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/espace-donateur" element={<DonorsSpace />} />
+        <Route path="/espace-partenaires" element={<PartnersSpace />} />
         <Route path="/blog" element={<BlogHome />} />
         <Route path="/actualites" element={<BlogList />} />
         <Route path="/actualites/:slug" element={<PostDetail />} />

@@ -38,19 +38,19 @@ const CustomCursor = () => {
     <>
       {/* Visible Dot */}
       <motion.div
-        className="fixed top-0 left-0 w-2 h-2 bg-secondary rounded-full z-[10000] pointer-events-none shadow-[0_0_10px_rgba(0,0,0,0.1)]"
+        className="fixed top-0 left-0 w-2 h-2 bg-white rounded-full z-[10000] pointer-events-none mix-blend-difference"
         style={{ x: mouseX, y: mouseY, translateX: '-50%', translateY: '-50%' }}
       />
       
       {/* Visible Ring - Subtle and clean */}
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 border-2 border-secondary rounded-full z-[9999] pointer-events-none"
+        className="fixed top-0 left-0 w-8 h-8 border-2 border-white rounded-full z-[9999] pointer-events-none mix-blend-difference"
         style={{
           x: ringX,
           y: ringY,
           translateX: '-50%',
           translateY: '-50%',
-          scale: isPointer ? 1.3 : 1,
+          scale: isPointer ? 1.5 : 1,
           opacity: 0.8,
         }}
       />
