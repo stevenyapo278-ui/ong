@@ -13,7 +13,7 @@ import {
   AlertCircle,
   FileText
 } from 'lucide-react';
-import api from '../api/axios';
+import api, { UPLOAD_URL } from '../api/axios';
 import { usePostById } from '../hooks/usePostById';
 import RichTextEditor from '../components/RichTextEditor';
 import { getCategories, Category } from '../api/categoriesApi';
@@ -97,7 +97,7 @@ const EditPost = () => {
       if (media?.url) {
         const url = media.url.startsWith('http')
           ? media.url
-          : `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${media.url}`;
+          : `${UPLOAD_URL}${media.url}`;
         setFeaturedImage(url);
         setSaveStatus('saved');
         setTimeout(() => setSaveStatus('idle'), 2000);

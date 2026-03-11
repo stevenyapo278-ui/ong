@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { usePostsList } from '../hooks/usePostsList';
 import { stripHtml } from '../utils/text';
 import { formatPostType } from '../utils/post';
+import { fixUrl } from '../api/axios';
 
 const BlogHome = () => {
   const [search, setSearch] = useState('');
@@ -55,7 +56,7 @@ const BlogHome = () => {
                   <div className="lg:w-3/5 relative overflow-hidden aspect-video lg:aspect-auto">
                     {featured.featuredImage ? (
                       <img
-                        src={featured.featuredImage}
+                        src={fixUrl(featured.featuredImage)}
                         alt={featured.title}
                         className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                       />
@@ -124,7 +125,7 @@ const BlogHome = () => {
                 <div className="relative aspect-[4/5] bg-background-alt rounded-[30px] md:rounded-[40px] overflow-hidden mb-6 md:mb-8 shadow-sm transition-all duration-700 group-hover:shadow-primary/5 group-hover:shadow-2xl group-hover:-translate-y-2 md:group-hover:-translate-y-3 group-hover:rotate-1">
                   {post.featuredImage ? (
                     <img
-                      src={post.featuredImage}
+                      src={fixUrl(post.featuredImage)}
                       alt={post.title}
                       className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                     />

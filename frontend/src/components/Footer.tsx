@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
-import { Mail, ArrowRight, Instagram, Twitter, Facebook, Globe, Phone, MapPin } from 'lucide-react';
+import { Mail, ArrowRight, Instagram, Twitter, Facebook, Phone, MapPin } from 'lucide-react';
 
 const Footer = () => {
     const navigate = useNavigate();
@@ -74,12 +74,12 @@ const Footer = () => {
             {/* ── SECTION 2: INFOS & NEWSLETTER ── */}
             <div className="grid grid-cols-1 lg:grid-cols-10 shrink-0">
                 {/* Colonne de Gauche (Infos) - Fond Blanc */}
-                <div className="lg:col-span-6 bg-white py-20 px-6 md:px-16 space-y-16 flex flex-col justify-between">
+                <div className="lg:col-span-6 bg-background py-20 px-6 md:px-16 space-y-16 flex flex-col justify-between border-r border-border">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
                         {/* Branding & Bio */}
                         <div className="space-y-8">
                             <div className="flex items-center group cursor-pointer">
-                                <div className="flex items-center justify-center w-14 h-14 bg-white rounded-2xl shadow-xl shadow-black/5 group-hover:scale-110 transition-all border border-border">
+                                <div className="flex items-center justify-center w-14 h-14 bg-background-alt rounded-2xl shadow-xl shadow-black/5 group-hover:scale-110 transition-all border border-border">
                                     <img src="/assets/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
                                 </div>
                                 <div className="ml-4">
@@ -87,12 +87,12 @@ const Footer = () => {
                                     <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mt-1">Plateforme Humanitaire</p>
                                 </div>
                             </div>
-                            <p className="text-sm font-medium text-slate-500 leading-relaxed max-w-sm">
-                                BIEN VIVRE ICI est une organisation loi 1901, apolitique et non confessionnelle, reconnue d'utilité publique. Nous luttons contre la pauvreté et les inégalités en apportant une aide directe et transparente.
+                            <p className="text-sm font-medium text-foreground-muted leading-relaxed max-w-sm">
+                                ONG BIEN VIVRE ICI est une organisation loi 1901, apolitique et non confessionnelle, reconnue d'utilité publique. Nous luttons contre la pauvreté et les inégalités en apportant une aide directe et transparente.
                             </p>
                             <div className="flex gap-4">
                                 {[Facebook, Instagram, Twitter].map((Icon, i) => (
-                                    <button key={i} className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+                                    <button key={i} className="w-10 h-10 rounded-xl bg-background-alt text-foreground-muted border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-all">
                                         <Icon size={18} />
                                     </button>
                                 ))}
@@ -102,32 +102,32 @@ const Footer = () => {
                         {/* Navigation Footer */}
                         <div className="grid grid-cols-2 gap-10">
                             <div className="space-y-6">
-                                <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.25em]">Vos Espaces</h4>
+                                <h4 className="text-[11px] font-black text-foreground uppercase tracking-[0.25em]">Vos Espaces</h4>
                                 <ul className="space-y-4">
                                     <li>
-                                        <button onClick={() => navigate('/espace-donateur')} className="text-[13px] font-bold text-slate-500 hover:text-primary transition-colors hover:translate-x-1 inline-block transform text-left">Espace donateur</button>
+                                        <button onClick={() => navigate('/espace-donateur')} className="text-[13px] font-bold text-foreground-muted hover:text-primary transition-colors hover:translate-x-1 inline-block transform text-left">Espace donateur</button>
                                     </li>
                                     <li>
-                                        <button onClick={() => navigate('/espace-partenaires')} className="text-[13px] font-bold text-slate-500 hover:text-primary transition-colors hover:translate-x-1 inline-block transform text-left">Espace partenaires</button>
+                                        <button onClick={() => navigate('/espace-partenaires')} className="text-[13px] font-bold text-foreground-muted hover:text-primary transition-colors hover:translate-x-1 inline-block transform text-left">Espace partenaires</button>
                                     </li>
                                     <li>
-                                        <button className="text-[13px] font-bold text-slate-500 hover:text-primary transition-colors hover:translate-x-1 inline-block transform text-left">Espace presse</button>
+                                        <button className="text-[13px] font-bold text-foreground-muted hover:text-primary transition-colors hover:translate-x-1 inline-block transform text-left">Espace presse</button>
                                     </li>
                                     <li>
-                                        <button className="text-[13px] font-bold text-slate-500 hover:text-primary transition-colors hover:translate-x-1 inline-block transform text-left">Recrutement</button>
+                                        <button className="text-[13px] font-bold text-foreground-muted hover:text-primary transition-colors hover:translate-x-1 inline-block transform text-left">Recrutement</button>
                                     </li>
                                 </ul>
                             </div>
                             <div className="space-y-6">
-                                <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.25em]">Contact Direct</h4>
+                                <h4 className="text-[11px] font-black text-foreground uppercase tracking-[0.25em]">Contact Direct</h4>
                                 <ul className="space-y-5">
-                                    <li className="flex items-start gap-3 text-slate-500">
+                                    <li className="flex items-start gap-3 text-foreground-muted">
                                         <MapPin size={16} className="text-primary shrink-0 mt-0.5" />
-                                        <span className="text-[12px] font-bold leading-tight">Bingerville, Côte d'Ivoire</span>
+                                        <span className="text-[12px] font-bold leading-tight uppercase tracking-tight">II Plateaux 7ème Tranche derrière le 22ème arrondissement de Cocody. BP 712 Cidex 3 Abidjan</span>
                                     </li>
-                                    <li className="flex items-center gap-3 text-slate-500">
+                                    <li className="flex items-center gap-3 text-foreground-muted">
                                         <Phone size={16} className="text-primary shrink-0" />
-                                        <span className="text-[12px] font-bold leading-none">+225 07 48 59 63</span>
+                                        <span className="text-[12px] font-bold leading-none">+225 0707824784</span>
                                     </li>
                                 </ul>
                             </div>
@@ -139,8 +139,9 @@ const Footer = () => {
                             &copy; {new Date().getFullYear()} ONG BIEN VIVRE ICI. RÉCITS D'IMPACT EN DIRECT.
                         </p>
                         <div className="flex gap-8 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">
-                            <button className="hover:text-primary transition-colors">Mentions Légales</button>
-                            <button className="hover:text-primary transition-colors">Politique Cookies</button>
+                            <button onClick={() => navigate('/plan-du-site')} className="hover:text-primary transition-colors">Plan du site</button>
+                            <button onClick={() => navigate('/mentions-legales')} className="hover:text-primary transition-colors">Mentions Légales</button>
+                            <button onClick={() => navigate('/politique-cookies')} className="hover:text-primary transition-colors">Politique Cookies</button>
                         </div>
                     </div>
                 </div>

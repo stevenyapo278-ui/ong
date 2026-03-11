@@ -106,3 +106,34 @@ model Subscriber {
   email     String   @unique
   createdAt DateTime @default(now())
 }
+
+model Donation {
+  id              String   @id @default(uuid())
+  amount          Int
+  currency        String   @default("XOF")
+  description     String?
+  status          String   @default("pending") // pending, success, error, canceled
+  reference       String?  @unique // Genius Pay reference
+  customerName    String?
+  customerEmail   String?
+  customerPhone   String?
+  transactionId   String?  @unique // Genius Pay Transaction ID
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Testimonial {
+  id              String   @id @default(uuid())
+  title           String   
+  quote           String   @db.Text
+  detailTitle     String?  
+  detailContent   String?  @db.Text
+  image           String?
+  ctaText         String?  @default("JE FAIS UN DON")
+  ctaLink         String?  @default("/espace-donateur")
+  active          Boolean  @default(true)
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+

@@ -7,12 +7,13 @@ import { formatPostType } from '../utils/post';
 import UsersManager from '../components/UsersManager';
 import CategoriesManager from '../components/CategoriesManager';
 import NewsletterManager from '../components/NewsletterManager';
+import TestimonialsManager from '../components/TestimonialsManager';
 import { useOverlay } from '../context/OverlayContext';
 
 const Dashboard = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'posts' | 'users' | 'categories' | 'newsletter' | 'settings'>('posts');
+  const [activeTab, setActiveTab] = useState<'posts' | 'users' | 'categories' | 'testimonials' | 'newsletter' | 'settings'>('posts');
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'DRAFT' | 'PENDING' | 'PUBLISHED'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -163,6 +164,14 @@ const Dashboard = () => {
                 className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black uppercase tracking-widest transition-all ${activeTab === 'categories' ? 'bg-background text-primary shadow-xl shadow-foreground/5' : 'text-foreground-muted hover:text-foreground'}`}
               >
                 <Tag size={16} /> Catégories
+              </button>
+            )}
+            {(user?.role === 'ADMIN' || user?.role === 'EDITOR') && (
+              <button
+                onClick={() => setActiveTab('testimonials')}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black uppercase tracking-widest transition-all ${activeTab === 'testimonials' ? 'bg-background text-primary shadow-xl shadow-foreground/5' : 'text-foreground-muted hover:text-foreground'}`}
+              >
+                <MessageSquare size={16} /> Témoignages
               </button>
             )}
             {user?.role === 'ADMIN' && (
@@ -511,6 +520,12 @@ const Dashboard = () => {
       {activeTab === 'newsletter' && user?.role === 'ADMIN' && (
         <div className="animate-in fade-in slide-in-from-bottom duration-500">
           <NewsletterManager />
+        </div>
+      )}
+
+      {activeTab === 'testimonials' && (user?.role === 'ADMIN' || user?.role === 'EDITOR') && (
+        <div className="animate-in fade-in slide-in-from-bottom duration-500">
+          <TestimonialsManager />
         </div>
       )}
 

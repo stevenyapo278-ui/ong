@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, Search, Image as ImageIcon, Video, FileText, Upload, Check, Loader2, Trash2 } from 'lucide-react';
-import api from '../api/axios';
+import api, { UPLOAD_URL } from '../api/axios';
 import { motion } from 'framer-motion';
 import PromptModal from './PromptModal';
 
@@ -131,7 +131,7 @@ const MediaManager = ({ onSelect, onClose, isOpen, postId }: MediaManagerProps) 
 
   const getFullUrl = (url: string) => {
     if (url.startsWith('http')) return url;
-    return `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${url}`;
+    return `${UPLOAD_URL}${url}`;
   };
 
   const getIcon = (type: string) => {

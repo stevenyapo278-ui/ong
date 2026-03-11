@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, LogOut, ChevronDown, ShieldCheck, LayoutGrid, Newspaper, ArrowRight } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, ShieldCheck, LayoutGrid, Newspaper, ArrowRight, Heart } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
@@ -85,7 +85,9 @@ const Navbar = () => {
             {/* Desktop Navigation (Hidden on Mobile) */}
             <div className="hidden lg:flex items-center gap-2 flex-grow justify-center px-6">
               <NavLink to="/" icon={LayoutGrid}>Accueil</NavLink>
+              <NavLink to="/nos-combats" icon={ShieldCheck}>Nos Combats</NavLink>
               <NavLink to="/actualites" icon={Newspaper}>Actualités</NavLink>
+              <NavLink to="/espace-donateur" icon={Heart}>Faire un don</NavLink>
             </div>
 
             {/* Right Side Tools */}
@@ -167,9 +169,17 @@ const Navbar = () => {
                 <span className="text-sm font-black uppercase tracking-widest">Accueil</span>
                 <LayoutGrid size={20} />
               </Link>
+              <Link to="/nos-combats" onClick={() => setIsOpen(false)} className={`flex items-center justify-between p-6 rounded-3xl transition-all ${location.pathname === '/nos-combats' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'bg-background-alt text-foreground-muted hover:bg-primary/5 hover:text-primary'}`}>
+                <span className="text-sm font-black uppercase tracking-widest">Nos Combats</span>
+                <ShieldCheck size={20} />
+              </Link>
               <Link to="/actualites" onClick={() => setIsOpen(false)} className={`flex items-center justify-between p-6 rounded-3xl transition-all ${location.pathname === '/actualites' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'bg-background-alt text-foreground-muted hover:bg-primary/5 hover:text-primary'}`}>
                 <span className="text-sm font-black uppercase tracking-widest">Actualités</span>
                 <Newspaper size={20} />
+              </Link>
+              <Link to="/espace-donateur" onClick={() => setIsOpen(false)} className={`flex items-center justify-between p-6 rounded-3xl transition-all ${location.pathname === '/espace-donateur' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'bg-background-alt text-foreground-muted hover:bg-primary/5 hover:text-primary'}`}>
+                <span className="text-sm font-black uppercase tracking-widest">Faire un don</span>
+                <Heart size={20} />
               </Link>
               {user && (
                 <Link to="/dashboard" onClick={() => setIsOpen(false)} className="flex items-center justify-between p-6 rounded-3xl bg-background-alt text-foreground-muted font-black uppercase tracking-widest text-sm">

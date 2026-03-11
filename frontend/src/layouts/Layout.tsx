@@ -4,6 +4,7 @@ import { ThemeProvider } from '../context/ThemeContext';
 import ThemeToggle from '../components/ThemeToggle';
 import CustomCursor from '../components/CustomCursor';
 import Footer from '../components/Footer';
+import CookieBanner from '../components/CookieBanner';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -21,6 +22,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </main>
 
         <Footer />
+        <CookieBanner />
       </div>
     </ThemeProvider>
   );

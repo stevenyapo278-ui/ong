@@ -1,3 +1,4 @@
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './layouts/Layout';
 import Home from './pages/Home';
@@ -13,6 +14,10 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import DonorsSpace from './pages/DonorsSpace';
 import PartnersSpace from './pages/PartnersSpace';
+import NosCombats from './pages/NosCombats';
+import LegalNotice from './pages/LegalNotice';
+import CookiePolicy from './pages/CookiePolicy';
+import Sitemap from './pages/Sitemap';
 import ScrollToTop from './components/ScrollToTop';
 import { useAuth } from './context/AuthContext';
 
@@ -47,6 +52,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/espace-donateur" element={<DonorsSpace />} />
         <Route path="/espace-partenaires" element={<PartnersSpace />} />
+        <Route path="/nos-combats" element={<NosCombats />} />
+        <Route path="/mentions-legales" element={<LegalNotice />} />
+        <Route path="/politique-cookies" element={<CookiePolicy />} />
+        <Route path="/plan-du-site" element={<Sitemap />} />
         <Route path="/blog" element={<BlogHome />} />
         <Route path="/actualites" element={<BlogList />} />
         <Route path="/actualites/:slug" element={<PostDetail />} />

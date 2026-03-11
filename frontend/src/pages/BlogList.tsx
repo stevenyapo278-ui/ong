@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { stripHtml } from '../utils/text';
 import { formatPostType } from '../utils/post';
 import { getCategories, Category } from '../api/categoriesApi';
+import { fixUrl } from '../api/axios';
 
 const PAGE_SIZE = 9;
 
@@ -15,6 +16,7 @@ const BlogList = () => {
 
   const page = parseInt(searchParams.get('page') || '1', 10);
   const categoryId = searchParams.get('categoryId') || undefined;
+  const type = searchParams.get('type') || undefined;
 
   const { data, isLoading } = usePostsList({
     status: 'PUBLISHED',
@@ -22,6 +24,7 @@ const BlogList = () => {
     pageSize: PAGE_SIZE,
     search: searchParams.get('search') || undefined,
     categoryId,
+    type,
   });
 
   useEffect(() => {
@@ -136,7 +139,7 @@ const BlogList = () => {
                 <div className="relative aspect-[16/10] bg-background-alt rounded-[30px] overflow-hidden shadow-sm transition-all duration-500 group-hover:shadow-primary/10 group-hover:shadow-xl group-hover:-translate-y-2 border border-border">
                   {post.featuredImage ? (
                     <img
-                      src={post.featuredImage}
+                      src={fixUrl(post.featuredImage)}
                       alt={post.title}
                       loading="lazy"
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"

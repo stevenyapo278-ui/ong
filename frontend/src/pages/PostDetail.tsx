@@ -4,6 +4,7 @@ import { usePost } from '../hooks/usePost';
 import DOMPurify from 'dompurify';
 import { Helmet } from 'react-helmet-async';
 import { formatPostType } from '../utils/post';
+import { fixUrl } from '../api/axios';
 import { usePostsList } from '../hooks/usePostsList';
 import CommentsSection from '../components/CommentsSection';
 import { stripHtml } from '../utils/text';
@@ -54,9 +55,9 @@ const PostDetail = () => {
       ALLOWED_TAGS: ['p', 'div', 'span', 'strong', 'em', 'ul', 'ol', 'li', 'h2', 'h3', 'blockquote', 'a', 'img', 'video', 'source', 'iframe', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'mark', 'svg', 'path', 'polyline', 'rect', 'circle', 'line', 'hr'],
       ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'controls', 'allow', 'allowfullscreen', 'frameborder', 'style', 'data-size', 'data-type', 'data-name', 'data-src', 'data-cols', 'class', 'colspan', 'rowspan', 'data-colwidth', 'viewBox', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'd', 'points', 'width', 'height', 'x', 'y', 'x1', 'y1', 'x2', 'y2'],
     });
-    // Ajout automatique du lazy-loading sur toutes les images publiques
-    return clean.replace(/<img /g, '<img loading="lazy" ');
-  }, [post?.content]);
+    // Add lazy-loading and fix localhost URLs
+    return fixUrl(clean).replace(/<img /g, '<img loading="lazy" ');
+  }, [post?.content, fixUrl]);
 
   const siteUrl = window.location.origin;
   const postUrl = `${siteUrl}/actualites/${post?.slug}`;
@@ -137,7 +138,7 @@ const PostDetail = () => {
         {/* Featured Card */}
         <div className="relative rounded-[40px] overflow-hidden shadow-2xl shadow-primary/5 bg-background-alt aspect-video md:aspect-[21/9] transition-colors border border-border">
           {post.featuredImage ? (
-            <img src={post.featuredImage} alt={post.title} className="w-full h-full object-cover" />
+            <img src={fixUrl(post.featuredImage)} alt={post.title} className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-foreground-muted font-serif italic text-5xl">Récit</div>
           )}
@@ -218,7 +219,7 @@ const PostDetail = () => {
                 className="group space-y-4"
               >
                 <div className="aspect-[4/3] rounded-3xl bg-background-alt overflow-hidden shadow-lg shadow-primary/5 group-hover:shadow-primary/10 transition-all border border-border">
-                  <img src={item.featuredImage || '/assets/hero.png'} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <img src={fixUrl(item.featuredImage) || '/assets/hero.png'} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                 </div>
                 <h4 className="font-black text-foreground leading-tight group-hover:text-primary transition-colors transition-all line-clamp-2">{item.title}</h4>
               </Link>

@@ -1,20 +1,16 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, HelpingHand, Globe, ChevronRight, ShieldCheck, Droplets, Stethoscope, BookOpen, Activity, Target, MessageSquare } from 'lucide-react';
+import { ArrowRight, ChevronRight } from 'lucide-react';
 import { useOverlay } from '../context/OverlayContext';
 import api from '../api/axios';
-import { usePostsList } from '../hooks/usePostsList';
-import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Counter from '../components/Counter';
+import FAQ from '../components/FAQ';
+import OurCombats from '../components/OurCombats';
+import LatestPosts from '../components/LatestPosts';
+import TestimonialsSlider from '../components/TestimonialsSlider';
 
 const Home = () => {
   const { showNotification } = useOverlay();
-  const { data: postsData, isLoading: postsLoading } = usePostsList({ pageSize: 3, status: 'PUBLISHED' });
-
-  const posts = postsData?.items || [];
-  const latestPost = posts[0];
-  const sidePosts = posts.slice(1);
 
   return (
     <div className="flex flex-col">
@@ -46,7 +42,7 @@ const Home = () => {
             </h1>
             
             <p className="text-xl text-white/80 max-w-xl leading-relaxed">
-              L'ONG <span className="text-secondary font-bold">Bien Vivre Ici</span> s'engage pour le bien-être des communautés vulnérables à Bingerville.
+              L'ONG <span className="text-secondary font-bold">Bien Vivre Ici</span> s'engage pour le bien-être des communautés vulnérables à Cocody.
             </p>
 
             <div className="flex flex-wrap gap-4 pt-4">
@@ -125,50 +121,28 @@ const Home = () => {
               Une vision pour le <span className="text-primary">développement</span> local.
             </h3>
             <p className="text-lg text-foreground-muted leading-relaxed">
-              Basée à Bingerville, notre organisation est née d'une volonté simple : permettre à chaque Ivoirien de "bien vivre ici", dans sa communauté.
+              Basée à Cocody, notre organisation est née d'une volonté simple : permettre à chaque Ivoirien de "bien vivre ici", dans sa communauté.
             </p>
-            <Link to="/actualites" className="inline-flex items-center gap-2 text-primary font-bold uppercase text-xs hover:gap-4 transition-all">
-              Découvrir notre impact <ChevronRight size={14} />
+            <Link to="/nos-combats" className="inline-flex items-center gap-2 text-primary font-bold uppercase text-xs hover:gap-4 transition-all">
+              Découvrir nos combats <ChevronRight size={14} />
             </Link>
           </motion.div>
         </div>
       </section>
 
-      {/* ── 04. Missions Grid ── */}
-      <section className="py-24 bg-background-alt">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
-            <h2 className="text-primary font-bold tracking-[0.2em] text-xs uppercase">NOS MISSIONS</h2>
-            <h3 className="text-4xl font-black text-foreground">Piliers de transformation.</h3>
-          </div>
+      {/* ── 04. Our Combats Section ── */}
+      <OurCombats />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { title: "Culture de la Paix", icon: <ShieldCheck />, text: "Favoriser la cohésion sociale." },
-              { title: "Développement Durable", icon: <Droplets />, text: "Protéger notre environnement." },
-              { title: "Entrepreneuriat", icon: <Target />, text: "Soutenir l'innovation locale." },
-              { title: "Lutte contre la Pauvreté", icon: <HelpingHand />, text: "Actions directes aux plus vulnérables." },
-              { title: "Santé Communautaire", icon: <Stethoscope />, text: "Accès aux soins pour tous." },
-              { title: "Formation", icon: <BookOpen />, text: "Renforcement des capacités." }
-            ].map((m, i) => (
-              <motion.div 
-                key={i} 
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="p-8 rounded-[30px] bg-background border border-border hover:border-primary/50 transition-all flex flex-col items-start gap-4"
-              >
-                <div className="text-primary">{m.icon}</div>
-                <h4 className="text-xl font-black text-foreground">{m.title}</h4>
-                <p className="text-sm text-foreground-muted">{m.text}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ── 05. Latest Posts Section ── */}
+      <LatestPosts />
 
-      {/* ── 05. Newsletter ── */}
+      {/* ── 06. Testimonials Section ── */}
+      <TestimonialsSlider />
+
+      {/* ── 07. FAQ Section ── */}
+      <FAQ />
+
+      {/* ── 07. Newsletter ── */}
       <section className="px-6 py-24 bg-background border-t border-border">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <h3 className="text-4xl font-black text-foreground tracking-tight">
@@ -208,7 +182,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ── 06. Final CTA ── */}
+      {/* ── 08. Final CTA ── */}
       <section className="px-6 py-24">
         <motion.div 
           initial={{ opacity: 0 }}
@@ -221,7 +195,7 @@ const Home = () => {
               Le changement commence ici.
             </h2>
             <Link
-              to="/actualites"
+              to="/espace-donateur"
               className="inline-flex px-12 py-5 bg-primary text-white font-black text-lg uppercase tracking-widest rounded-full hover:scale-105 transition-all"
             >
               Faire un Don

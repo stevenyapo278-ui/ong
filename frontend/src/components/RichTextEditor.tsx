@@ -142,7 +142,11 @@ const EDITOR_EXTENSIONS = [
   Youtube.configure({ controls: true }),
   Highlight.configure({ multicolor: true }),
   CharacterCount.configure({ limit: null }),
-  Underline,
+  Underline.configure({ 
+    HTMLAttributes: {
+      class: 'my-custom-underline',
+    },
+  }),
   VideoNode,
   FileNode,
   Column,
