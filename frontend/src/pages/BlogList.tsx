@@ -6,6 +6,7 @@ import { stripHtml } from '../utils/text';
 import { formatPostType } from '../utils/post';
 import { getCategories, Category } from '../api/categoriesApi';
 import { fixUrl } from '../api/axios';
+import SEO from '../components/SEO';
 
 const PAGE_SIZE = 9;
 
@@ -55,7 +56,12 @@ const BlogList = () => {
   };
 
   return (
-    <div className="space-y-12 py-10 max-w-7xl mx-auto px-4">
+    <div className="space-y-12 py-10 max-w-7xl mx-auto px-4 pt-32">
+      <SEO 
+        title="Actualités & Impact" 
+        description="Suivez les dernières nouvelles, récits et rapports d'impact de l'ONG Bien Vivre Ici en Côte d'Ivoire. Restez informé de nos projets humanitaires."
+        canonical="/actualites"
+      />
       {/* ── Header ── */}
       <div className="text-center space-y-6 max-w-2xl mx-auto mb-16">
         <h1 className="text-4xl md:text-5xl font-black text-foreground tracking-tight transition-colors">

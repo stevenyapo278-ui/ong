@@ -67,21 +67,21 @@ const LatestPosts = () => {
     if (isLoading || posts.length === 0) return null;
 
     return (
-        <section className="py-32 bg-background-alt/30 overflow-hidden">
-            <div className="max-w-7xl mx-auto px-6 mb-16">
-                <div className="flex flex-col md:flex-row justify-between items-end gap-8">
+        <section className="py-20 md:py-32 bg-background-alt/30 overflow-hidden">
+            <div className="max-w-7xl mx-auto px-4 md:px-6 mb-12 md:mb-16">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-8">
                     <div className="space-y-4">
-                        <h2 className="text-primary font-black tracking-[0.3em] text-[10px] uppercase">ACTUALITÉS & RÉCITS</h2>
-                        <h3 className="text-5xl md:text-7xl font-black text-foreground leading-none tracking-tighter">
-                            Le journal de <br />
+                        <h2 className="text-primary font-black tracking-[0.3em] text-[9px] md:text-[10px] uppercase">ACTUALITÉS & RÉCITS</h2>
+                        <h3 className="text-4xl md:text-7xl font-black text-foreground leading-none tracking-tighter">
+                            Le journal de <br className="hidden md:block" />
                             <span className="text-secondary italic">notre impact.</span>
                         </h3>
                     </div>
                     <Link 
                         to="/blog" 
-                        className="flex items-center gap-3 px-8 py-4 bg-background border border-border rounded-2xl text-foreground font-black text-[11px] uppercase tracking-widest hover:border-primary hover:text-primary transition-all shadow-sm"
+                        className="flex items-center gap-3 px-6 md:px-8 py-3.5 md:py-4 bg-background border border-border rounded-2xl text-foreground font-black text-[10px] md:text-[11px] uppercase tracking-widest hover:border-primary hover:text-primary transition-all shadow-sm active:scale-95"
                     >
-                        Voir tout le journal <ArrowRight size={16} />
+                        Tout voir <ArrowRight size={16} />
                     </Link>
                 </div>
             </div>
@@ -90,7 +90,7 @@ const LatestPosts = () => {
             <div className="relative">
                 <div 
                     ref={targetRef}
-                    className="flex gap-8 overflow-x-auto pb-12 px-6 md:px-[calc((100vw-1280px)/2+24px)] no-scrollbar cursor-grab active:cursor-grabbing snap-x"
+                    className="flex gap-6 md:gap-8 overflow-x-auto pb-12 px-4 md:px-[calc((100vw-1280px)/2+24px)] no-scrollbar cursor-grab active:cursor-grabbing snap-x"
                 >
                     {posts.map((post) => (
                         <div key={post.id} className="snap-start">
@@ -101,17 +101,15 @@ const LatestPosts = () => {
                     {/* Final Card: Link to Blog */}
                     <Link 
                         to="/blog"
-                        className="flex-shrink-0 w-[300px] md:w-[450px] aspect-[16/10] rounded-[32px] bg-primary flex flex-col items-center justify-center text-center p-12 group hover:bg-foreground transition-all duration-500 shadow-2xl snap-start"
+                        className="flex-shrink-0 w-[280px] md:w-[450px] aspect-[16/10] rounded-[32px] bg-primary flex flex-col items-center justify-center text-center p-8 md:p-12 group hover:bg-foreground transition-all duration-500 shadow-2xl snap-start"
                     >
-                        <BookOpen size={64} className="text-white mb-6 group-hover:scale-110 transition-transform" />
-                        <h4 className="text-2xl font-black text-white italic mb-4">Découvrez tous nos autres récits d'impact</h4>
-                        <div className="flex items-center gap-2 text-white/70 font-black text-[11px] uppercase tracking-[0.2em]">
+                        <BookOpen size={48} className="text-white mb-6 group-hover:scale-110 transition-transform md:w-16 md:h-16" />
+                        <h4 className="text-xl md:text-2xl font-black text-white italic mb-4">Découvrez tous nos autres récits d'impact</h4>
+                        <div className="flex items-center gap-2 text-white/70 font-black text-[10px] md:text-[11px] uppercase tracking-[0.2em]">
                             Accéder au blog <ArrowRight size={14} />
                         </div>
                     </Link>
                 </div>
-                
-                {/* Visual indicator / custom scrollbar logic if needed, but horizontal scroll is often enough */}
             </div>
         </section>
     );

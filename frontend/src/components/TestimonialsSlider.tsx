@@ -36,7 +36,7 @@ const TestimonialsSlider = () => {
                         title: "Jupiter a mis fin à la pénurie d'eau dans son village en Indonésie",
                         quote: "Pour lutter contre la pénurie d'eau durant les saisons sèches, CARE a soutenu l'action de Jupiter. Plus de 100 puits ont été construits dans plusieurs villages. « Je voulais notamment aider les femmes qui devaient aller loin pour aller chercher de l'eau. »",
                         detailTitle: "Faites la différence !",
-                        detailContent: "Avec 170€ par mois pendant un an, soit 42€ après réduction fiscale, vous permettez par exemple de construire un puits. C'est tout un village qui a accès à de l'eau potable.",
+                        detailContent: "Avec un don de 170€ (soit 42€ après réduction fiscale), vous permettez par exemple de construire un puits. C'est tout un village qui a accès à de l'eau potable.",
                         image: "/assets/testimony_water.png",
                         ctaText: "JE FAIS UN DON",
                         ctaLink: "/espace-donateur"
@@ -62,15 +62,15 @@ const TestimonialsSlider = () => {
     const current = testimonials[currentIndex];
 
     return (
-        <section className="py-24 bg-background overflow-hidden">
-            <div className="max-w-7xl mx-auto px-6">
+        <section className="py-16 md:py-24 bg-background overflow-hidden">
+            <div className="max-w-7xl mx-auto px-4 md:px-6">
                 {/* Header */}
-                <div className="text-center mb-16 space-y-6">
-                    <h2 className="text-4xl md:text-6xl font-black text-foreground tracking-tight">
+                <div className="text-center mb-12 md:mb-16 space-y-4 md:space-y-6">
+                    <h2 className="text-3xl md:text-6xl font-black text-foreground tracking-tight">
                         Nos victoires en <span className="text-primary">témoignages !</span> <span className="text-secondary">.</span>
                     </h2>
-                    <p className="max-w-3xl mx-auto text-foreground-muted font-medium text-lg leading-relaxed">
-                        Changer les choses, vous y croyez ? Nous aussi ! Ces femmes et hommes ont réussi à sortir de la précarité. Et votre soutien compte.
+                    <p className="max-w-3xl mx-auto text-foreground-muted font-medium text-base md:text-lg leading-relaxed">
+                        Changer les choses, vous y croyez ? Nous aussi ! Ces femmes et hommes ont réussi à sortir de la précarité.
                     </p>
                 </div>
 
@@ -83,36 +83,36 @@ const TestimonialsSlider = () => {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
                             transition={{ duration: 0.5 }}
-                            className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-center min-h-[600px]"
+                            className="flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-0 items-center min-h-[500px] md:min-h-[600px]"
                         >
-                            {/* Left Text Block (Overlapping) */}
-                            <div className="lg:col-span-6 z-20 lg:-mr-20">
-                                <div className="bg-background-alt p-8 md:p-14 rounded-3xl md:rounded-[40px] shadow-2xl border border-border space-y-8 relative">
+                            {/* Text Block */}
+                            <div className="w-full lg:col-span-6 z-20 lg:-mr-20 order-2 lg:order-1">
+                                <div className="bg-background-alt p-6 md:p-14 rounded-[30px] md:rounded-[40px] shadow-2xl border border-border space-y-6 md:space-y-8 relative">
                                     {/* Accent line */}
-                                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-32 bg-secondary rounded-r-full" />
+                                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-20 md:w-2 md:h-32 bg-secondary rounded-r-full" />
                                     
-                                    <h3 className="text-2xl md:text-3xl font-black text-foreground leading-tight italic">
+                                    <h3 className="text-xl md:text-3xl font-black text-foreground leading-tight italic">
                                         {current.title}
                                     </h3>
                                     
                                     <div className="space-y-4">
-                                        <Quote size={40} className="text-primary opacity-20" />
-                                        <p className="text-lg text-foreground-muted italic leading-relaxed font-serif pl-4">
+                                        <Quote size={32} className="text-primary opacity-20 md:w-10 md:h-10" />
+                                        <p className="text-base md:text-lg text-foreground-muted italic leading-relaxed font-serif pl-0 md:pl-4">
                                             {current.quote}
                                         </p>
                                     </div>
 
                                     <div className="pt-6 border-t border-border space-y-6">
                                         <div className="space-y-2">
-                                            <h4 className="text-xl font-black text-foreground">{current.detailTitle}</h4>
-                                            <p className="text-sm text-foreground-muted font-medium leading-relaxed">
+                                            <h4 className="text-lg md:text-xl font-black text-foreground">{current.detailTitle}</h4>
+                                            <p className="text-xs md:text-sm text-foreground-muted font-medium leading-relaxed">
                                                 {current.detailContent}
                                             </p>
                                         </div>
 
                                         <Link
                                             to={current.ctaLink}
-                                            className="inline-flex items-center gap-4 bg-secondary text-white px-10 py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-foreground transition-all shadow-xl shadow-secondary/20 group"
+                                            className="inline-flex items-center justify-center gap-4 bg-secondary text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest hover:bg-foreground transition-all shadow-xl shadow-secondary/20 group w-full sm:w-auto"
                                         >
                                             {current.ctaText}
                                             <Heart size={18} className="group-hover:scale-110 transition-transform" />
@@ -121,18 +121,18 @@ const TestimonialsSlider = () => {
                                 </div>
                             </div>
 
-                            {/* Right Image Block */}
-                            <div className="lg:col-span-7 lg:col-start-6 z-10 aspect-[4/3] lg:aspect-auto h-full min-h-[400px]">
-                                <div className="w-full h-full rounded-[40px] overflow-hidden shadow-2xl relative">
+                            {/* Image Block */}
+                            <div className="w-full lg:col-span-7 lg:col-start-6 z-10 aspect-[4/3] md:aspect-auto h-[300px] md:h-full order-1 lg:order-2">
+                                <div className="w-full h-full rounded-[30px] md:rounded-[40px] overflow-hidden shadow-2xl relative">
                                     {current.image ? (
                                         <img 
-                                            src={current.image.startsWith('http') ? current.image : current.image} 
+                                            src={current.image} 
                                             alt={current.title} 
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
                                         <div className="w-full h-full bg-foreground flex items-center justify-center">
-                                            <Quote size={100} className="text-white/10" />
+                                            <Quote size={80} className="text-white/10" />
                                         </div>
                                     )}
                                     {/* Subtle Overlay */}

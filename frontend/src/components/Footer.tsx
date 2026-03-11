@@ -110,12 +110,6 @@ const Footer = () => {
                                     <li>
                                         <button onClick={() => navigate('/espace-partenaires')} className="text-[13px] font-bold text-foreground-muted hover:text-primary transition-colors hover:translate-x-1 inline-block transform text-left">Espace partenaires</button>
                                     </li>
-                                    <li>
-                                        <button className="text-[13px] font-bold text-foreground-muted hover:text-primary transition-colors hover:translate-x-1 inline-block transform text-left">Espace presse</button>
-                                    </li>
-                                    <li>
-                                        <button className="text-[13px] font-bold text-foreground-muted hover:text-primary transition-colors hover:translate-x-1 inline-block transform text-left">Recrutement</button>
-                                    </li>
                                 </ul>
                             </div>
                             <div className="space-y-6">
@@ -128,6 +122,19 @@ const Footer = () => {
                                     <li className="flex items-center gap-3 text-foreground-muted">
                                         <Phone size={16} className="text-primary shrink-0" />
                                         <span className="text-[12px] font-bold leading-none">+225 0707824784</span>
+                                    </li>
+                                    <li className="pt-4">
+                                        <div className="w-full h-32 rounded-2xl overflow-hidden border border-border shadow-inner grayscale hover:grayscale-0 transition-all duration-700">
+                                            <iframe 
+                                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3972.193233816576!2d-3.9855523!3d5.3875326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfc193181816f157%3A0x89ee90586e92c2a3!2sII%20Plateaux%207%C3%A8me%20Tranche%2C%20Abidjan!5e0!3m2!1sfr!2sci!4v1710144000000!5m2!1sfr!2sci" 
+                                                width="100%" 
+                                                height="100%" 
+                                                style={{ border: 0 }} 
+                                                allowFullScreen={true} 
+                                                loading="lazy" 
+                                                referrerPolicy="no-referrer-when-downgrade">
+                                            </iframe>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>

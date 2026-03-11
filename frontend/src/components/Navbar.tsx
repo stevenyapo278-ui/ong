@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, LogOut, ChevronDown, ShieldCheck, LayoutGrid, Newspaper, ArrowRight, Heart, Users } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, ShieldCheck, LayoutGrid, Newspaper, Heart, Users } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
@@ -35,12 +35,12 @@ const Navbar = () => {
     return (
       <Link
         to={to}
-        className={`flex items-center gap-2.5 px-6 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-[0.15em] transition-all duration-300 ${active
+        className={`flex items-center gap-2 px-3 xl:px-5 py-2.5 rounded-2xl text-[10px] xl:text-[11px] font-black uppercase tracking-widest transition-all duration-300 whitespace-nowrap ${active
           ? 'bg-primary text-white shadow-lg shadow-primary/20'
           : 'text-foreground-muted hover:text-primary hover:bg-primary/10'
           }`}
       >
-        {Icon && <Icon size={14} className={active ? 'text-white' : 'text-foreground-muted group-hover:text-primary'} />}
+        {Icon && <Icon size={14} className={`shrink-0 ${active ? 'text-white' : 'text-foreground-muted group-hover:text-primary'}`} />}
         {children}
       </Link>
     );
@@ -83,7 +83,7 @@ const Navbar = () => {
             </div>
 
             {/* Desktop Navigation (Hidden on Mobile) */}
-            <div className="hidden lg:flex items-center gap-2 flex-grow justify-center px-6">
+            <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-grow justify-center px-2 lg:px-6 overflow-hidden">
               <NavLink to="/" icon={LayoutGrid}>Accueil</NavLink>
                <NavLink to="/nos-combats" icon={ShieldCheck}>Nos Combats</NavLink>
               <NavLink to="/actualites" icon={Newspaper}>Actualités</NavLink>
@@ -92,21 +92,24 @@ const Navbar = () => {
             </div>
 
             {/* Right Side Tools */}
-            <div className="flex items-center gap-3 z-10">
+            <div className="flex items-center gap-3 z-10 shrink-0">
               {/* Desktop User Tools */}
-              <div className="hidden lg:flex items-center gap-4">
-                {user ? (
-                  <div className="flex items-center gap-4">
-                    <NavLink to="/dashboard" icon={ShieldCheck}>Dashboard</NavLink>
+              <div className="hidden lg:flex items-center gap-3 xl:gap-4">
+                {user && (
+                  <div className="flex items-center gap-2 xl:gap-4">
+                    <Link to="/dashboard" className="hidden lg:flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary hover:bg-primary text-[10px] xl:text-[11px] font-black uppercase tracking-widest rounded-full transition-all group">
+                      <ShieldCheck size={14} className="group-hover:text-white" />
+                      <span className="group-hover:text-white">Dashboard</span>
+                    </Link>
                     <div className="relative">
                       <button
                         onClick={(e) => { e.stopPropagation(); setShowUserMenu(!showUserMenu); }}
-                        className="flex items-center gap-3 bg-background-alt pl-2 pr-4 py-1.5 rounded-full border border-border hover:bg-background hover:border-primary transition-all cursor-pointer"
+                        className="flex items-center gap-2 bg-background-alt p-1 pr-3 rounded-full border border-border hover:bg-background hover:border-primary transition-all cursor-pointer"
                       >
-                        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-black text-xs">
-                          {user.name.charAt(0)}
+                        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-black text-xs shrink-0">
+                          {user.name.charAt(0).toUpperCase()}
                         </div>
-                        <span className="text-sm font-black text-foreground tracking-tight whitespace-nowrap">{user.name}</span>
+                        <span className="hidden xl:block text-[11px] font-black text-foreground tracking-tight truncate max-w-[80px]">{user.name}</span>
                         <ChevronDown size={14} className={`text-foreground-muted transition-all duration-300 ${showUserMenu ? 'rotate-180' : ''}`} />
                       </button>
                       {showUserMenu && (
@@ -124,11 +127,6 @@ const Navbar = () => {
                         </div>
                       )}
                     </div>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-4">
-                    <Link to="/login" className="text-[11px] font-black uppercase tracking-widest text-foreground-muted hover:text-primary transition-all px-4">Connexion</Link>
-                    <Link to="/login" className="bg-foreground text-background px-8 py-3.5 rounded-[18px] text-[11px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-xl shadow-black/10">Rejoindre</Link>
                   </div>
                 )}
               </div>
@@ -149,7 +147,7 @@ const Navbar = () => {
 
         {/* Mobile Flyout Menu */}
         <div
-          className={`lg:hidden fixed inset-x-4 top-24 z-[100] bg-background rounded-[40px] shadow-[0_40px_100px_rgba(0,0,0,0.3)] border border-border transition-all duration-500 transform ${isOpen ? 'translate-y-0 opacity-100 scale-100' : '-translate-y-10 opacity-0 scale-95 pointer-events-none'}`}
+          className={`lg:hidden fixed inset-x-4 top-24 z-[100] bg-background rounded-[40px] shadow-[0_40px_100px_rgba(0,0,0,0.3)] border border-border transition-all duration-500 transform max-h-[calc(100vh-140px)] overflow-y-auto ${isOpen ? 'translate-y-0 opacity-100 scale-100' : '-translate-y-10 opacity-0 scale-95 pointer-events-none'}`}
         >
           <div className="p-10 space-y-10">
             {/* Branding in Menu */}
@@ -195,11 +193,7 @@ const Navbar = () => {
             </div>
 
             <div className="flex flex-col gap-4">
-              {!user ? (
-                <Link to="/login" onClick={() => setIsOpen(false)} className="flex items-center justify-center gap-3 bg-foreground text-background font-black uppercase tracking-[0.2em] text-[11px] py-6 rounded-[30px] shadow-2xl shadow-black/10 hover:bg-primary transition-all group">
-                  Connexion <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
-                </Link>
-              ) : (
+              {user && (
                 <button
                   onClick={handleLogout}
                   className="flex items-center justify-center gap-3 bg-red-500 text-white font-black uppercase tracking-[0.2em] text-[11px] py-6 rounded-[30px] shadow-lg shadow-red-500/20"

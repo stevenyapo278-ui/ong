@@ -16,16 +16,20 @@
   line-height: 1.5;
   font-weight: 400;
 
-  --primary: #007D37; /* Green from logo */
+  --primary: #007D37;
   --primary-muted: rgba(0, 125, 55, 0.1);
-  --secondary: #F18700; /* Orange from logo */
-  --accent-blue: #1A539B; /* Blue from logo */
+  --secondary: #F18700;
+  --accent-blue: #1A539B;
   --foreground: #111827;
   --foreground-muted: #4b5563;
   --background: #ffffff;
-  --background-alt: #f1f5f9; /* Slate 100 - Un peu plus "sombre" que f8fafc */
-  --background-canvas: #e2e8f0; /* Slate 200 - Pour une distinction forte en mode edit */
+  --background-alt: #f1f5f9;
+  --background-canvas: #e2e8f0;
   --border: #e2e8f0;
+
+  /* Grid / Carreau pattern */
+  --grid-color: rgba(0, 0, 0, 0.055);
+  --grid-size: 40px;
 }
 
 .dark {
@@ -38,6 +42,9 @@
   --primary: #10b981;
   --primary-muted: rgba(16, 185, 129, 0.2);
   --secondary: #fb923c;
+
+  /* Grid / Carreau pattern (dark) */
+  --grid-color: rgba(255, 255, 255, 0.04);
 }
 
 body {
@@ -45,6 +52,11 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-color: var(--background);
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  background-position: top left;
   color: var(--foreground);
   scroll-behavior: smooth;
   transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1);

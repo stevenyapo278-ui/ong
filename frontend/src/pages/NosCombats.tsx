@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
-import { ShieldCheck, Droplets, Target, HelpingHand, Stethoscope, Heart } from 'lucide-react';
+import { ShieldCheck, Droplets, Target, HelpingHand, Stethoscope, Heart, GraduationCap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 const CombatDetail = ({ title, summary, points, icon: Icon, image, index }: any) => {
   const isEven = index % 2 === 0;
@@ -10,32 +11,39 @@ const CombatDetail = ({ title, summary, points, icon: Icon, image, index }: any)
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 items-center py-24 border-b border-border last:border-0`}
+      className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-10 md:gap-16 items-center py-16 md:py-24 border-b border-border last:border-0`}
     >
-      <div className="flex-1 space-y-8">
+      <div className="flex-1 space-y-6 md:space-y-8">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-            <Icon size={32} />
+          <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+            <Icon size={28} className="md:w-8 md:h-8" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-foreground">{title}</h2>
+          <h2 className="text-3xl md:text-5xl font-black text-foreground leading-tight italic">{title}</h2>
         </div>
         
-        <p className="text-xl text-foreground-muted leading-relaxed italic">
-          "{summary}"
+        <p className="text-base md:text-xl text-foreground-muted leading-relaxed font-medium">
+          {summary}
         </p>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {points.map((point: string, idx: number) => (
-            <div key={idx} className="flex items-center gap-3 p-4 rounded-2xl bg-background-alt border border-border">
+            <div key={idx} className="flex items-center gap-3 p-4 rounded-2xl bg-background-alt border border-border group hover:border-primary/30 transition-colors">
               <div className="w-2 h-2 rounded-full bg-secondary flex-shrink-0" />
               <span className="text-sm font-bold text-foreground">{point}</span>
             </div>
           ))}
         </div>
+
+        <Link
+            to="/espace-donateur"
+            className="inline-flex items-center justify-center gap-4 bg-foreground text-background px-8 md:px-10 py-4 md:py-5 rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest hover:bg-primary hover:text-white transition-all shadow-xl w-full sm:w-auto"
+        >
+            Soutenir ce combat
+        </Link>
       </div>
       
-      <div className="flex-1 w-full">
-        <div className="relative aspect-[4/3] rounded-[40px] overflow-hidden group shadow-2xl border border-border/50">
+      <div className="flex-1 w-full relative">
+        <div className="relative aspect-[4/3] rounded-[30px] md:rounded-[40px] overflow-hidden group shadow-2xl border border-border/50">
             {image ? (
                 <img 
                     src={image} 
@@ -49,9 +57,9 @@ const CombatDetail = ({ title, summary, points, icon: Icon, image, index }: any)
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60" />
             
-            <div className="absolute bottom-8 left-8 right-8 p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
-                <p className="text-white font-black text-xs uppercase tracking-widest">Impact sur le terrain</p>
-                <p className="text-white/70 text-[10px] mt-1 uppercase tracking-widest">Cocody, Côte d'Ivoire</p>
+            <div className="absolute bottom-6 left-6 right-6 p-4 md:p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
+                <p className="text-white font-black text-[9px] md:text-xs uppercase tracking-widest">Impact sur le terrain</p>
+                <p className="text-white/70 text-[8px] md:text-[10px] mt-1 uppercase tracking-widest">Cocody, Abidjan</p>
             </div>
         </div>
       </div>
@@ -129,11 +137,30 @@ const NosCombats = () => {
               "Participation communautaire",
               "Promotion d'un mode de vie sain"
           ]
+        },
+        {
+          title: "Renforcement des Capacités",
+          icon: GraduationCap,
+          image: "/assets/mission_education.png",
+          summary: "Renforcer les capacités de tous permet de développer l'autonomie, la solidarité et le progès communautaire, en donnant à chacun les moyens d'agir efficacement dans sa vie et son environnement.",
+          points: [
+              "L'éducation et la formation",
+              "L'accès à l'information",
+              "L'accompagnement et le mentorat",
+              "La création de ressources",
+              "L'inclusion et la participation",
+              "La sensibilisation et la motivation"
+          ]
         }
     ];
 
   return (
     <div className="bg-background pt-32 pb-24">
+      <SEO 
+        title="Nos Combats" 
+        description="Découvrez les actions de l'ONG Bien Vivre Ici en Côte d'Ivoire : santé communautaire, éducation, paix, entrepreneuriat et lutte contre la pauvreté."
+        canonical="/nos-combats"
+      />
       {/* Header */}
       <section className="max-w-7xl mx-auto px-6 mb-20 text-center">
         <motion.div

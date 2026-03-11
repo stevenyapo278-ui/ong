@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useOverlay } from '../context/OverlayContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import SEO from '../components/SEO';
 
 const PartnersSpace = () => {
     const [brochureUrl, setBrochureUrl] = useState<string | null>(null);
@@ -55,6 +56,11 @@ const PartnersSpace = () => {
 
     return (
         <div className="min-h-screen bg-background font-sans overflow-hidden">
+            <SEO 
+                title="Espace Partenaires" 
+                description="Devenez partenaire de l'ONG Bien Vivre Ici. Ensemble, construisons des projets d'impact durable pour la Côte d'Ivoire. Téléchargez notre brochure."
+                canonical="/espace-partenaires"
+            />
             {/* ── HERO SECTION ── */}
             <section className="relative h-[65vh] md:h-[75vh] flex items-center overflow-hidden">
                 <div className="absolute inset-0 z-0">

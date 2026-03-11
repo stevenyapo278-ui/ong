@@ -59,11 +59,11 @@ const FAQ = () => {
     },
     {
       question: "Comment puis-je faire un don à ONG BIEN VIVRE ICI ?",
-      answer: "Vous pouvez faire un don ponctuel ou mensuel directement sur notre site via la page 'Faire un Don'. Nous acceptons les cartes bancaires, les virements et les solutions de paiement mobile locales pour faciliter votre générosité."
+      answer: "Vous pouvez faire un don ponctuel directement sur notre site via la page 'Faire un Don'. Nous acceptons les cartes bancaires, les virements et les solutions de paiement mobile locales pour faciliter votre générosité."
     },
     {
-      question: "Pourquoi m'encouragez-vous à faire un don mensuel ?",
-      answer: "Les dons mensuels sont le moteur de notre stabilité. Ils nous permettent de planifier nos actions sur le long terme, de maintenir nos programmes éducatifs sans interruption et d'intervenir instantanément face aux besoins urgents des communautés."
+      question: "Puis-je faire un don en nature ?",
+      answer: "Oui, nous acceptons également les dons en nature (matériel scolaire, équipements médicaux, denrées non périssables). Pour organiser la logistique, veuillez nous contacter directement via notre formulaire ou par téléphone."
     },
     {
       question: "Des personnes m'ont approché pour me demander des dons pour ONG BIEN VIVRE ICI. Comment puis-je vérifier s'il s'agit de représentants légitimes ou de fraudeurs potentiels ?",

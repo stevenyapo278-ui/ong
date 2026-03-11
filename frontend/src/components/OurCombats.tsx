@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ShieldCheck, Droplets, Target, HelpingHand, Stethoscope, ChevronRight } from 'lucide-react';
+import { ShieldCheck, Droplets, Target, HelpingHand, Stethoscope, ChevronRight, GraduationCap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const CombatCard = ({ title, summary, points, icon: Icon, image, delay }: any) => {
@@ -9,46 +9,42 @@ const CombatCard = ({ title, summary, points, icon: Icon, image, delay }: any) =
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay }}
-      className="group relative h-[500px] overflow-hidden rounded-[40px] bg-foreground flex flex-col justify-end p-8 md:p-12 hover:shadow-2xl transition-all border border-white/10"
+      className="group relative h-[450px] md:h-[500px] overflow-hidden rounded-[30px] md:rounded-[40px] bg-foreground flex flex-col justify-end p-6 md:p-12 hover:shadow-2xl transition-all border border-white/10"
     >
       {/* Visual background */}
       {image ? (
-          <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-90 grayscale-[30%] group-hover:grayscale-0" />
+          <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-90 grayscale-[30%] group-hover:grayscale-0" />
       ) : (
           <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity z-0 bg-primary/20" />
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent z-10" />
 
-      <div className="relative z-20 space-y-6">
+      <div className="relative z-20 space-y-4 md:space-y-6">
         <div className="flex items-center gap-3">
-            <div className="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-[10px] font-bold text-white uppercase tracking-[0.2em]">
-                FOCUS
-            </div>
-            <div className="text-secondary group-hover:scale-110 transition-transform">
-                <Icon size={20} />
-            </div>
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-primary/30 group-hover:bg-primary group-hover:border-transparent transition-all">
+            <Icon size={20} className="text-primary group-hover:text-white transition-colors" />
+          </div>
+          <h4 className="text-xl md:text-2xl font-black text-white italic">{title}</h4>
         </div>
+        
+        <p className="text-sm md:text-base text-white/80 line-clamp-3 md:line-clamp-none font-medium leading-relaxed">
+          {summary}
+        </p>
 
-        <h3 className="text-3xl md:text-4xl font-black text-white leading-tight">
-          {title}
-        </h3>
+        <ul className="hidden md:block space-y-2">
+            {points.slice(0, 3).map((point: string, i: number) => (
+                <li key={i} className="flex items-center gap-2 text-xs font-bold text-white/60">
+                    <div className="w-1 h-1 rounded-full bg-primary" />
+                    {point}
+                </li>
+            ))}
+        </ul>
 
-        <div className="space-y-4 max-h-0 opacity-0 group-hover:max-h-[300px] group-hover:opacity-100 transition-all duration-500 overflow-hidden">
-            <p className="text-white/80 text-sm leading-relaxed italic">
-                {summary}
-            </p>
-            <ul className="grid grid-cols-1 gap-2">
-                {points.map((point: string, idx: number) => (
-                    <li key={idx} className="flex items-start gap-2 text-white/70 text-xs">
-                        <span className="w-1.5 h-1.5 rounded-full bg-secondary mt-1.5 flex-shrink-0" />
-                        {point}
-                    </li>
-                ))}
-            </ul>
-        </div>
-
-        <Link to="/nos-combats" className="flex items-center gap-2 text-secondary font-bold uppercase text-[10px] tracking-widest pt-4 group/btn hover:text-primary transition-colors cursor-pointer">
-            DÉCOUVRIR <ChevronRight size={14} className="group-hover/btn:translate-x-2 transition-transform" />
+        <Link 
+          to="/nos-combats" 
+          className="inline-flex items-center gap-2 text-primary font-black uppercase text-[10px] md:text-xs tracking-widest group/btn"
+        >
+          Découvrir <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
         </Link>
       </div>
     </motion.div>
@@ -124,6 +120,20 @@ const OurCombats = () => {
           "Accès universel aux soins",
           "Participation communautaire",
           "Promotion d'un mode de vie sain"
+      ]
+    },
+    {
+      title: "Renforcement des Capacités",
+      icon: GraduationCap,
+      image: "/assets/mission_education.png",
+      summary: "Renforcer les capacités de tous permet de développer l'autonomie, la solidarité et le progès communautaire, en donnant à chacun les moyens d'agir efficacement dans sa vie et son environnement.",
+      points: [
+          "L'éducation et la formation",
+          "L'accès à l'information",
+          "L'accompagnement et le mentorat",
+          "La création de ressources",
+          "L'inclusion et la participation",
+          "La sensibilisation et la motivation"
       ]
     }
   ];
