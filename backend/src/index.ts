@@ -11,6 +11,8 @@ import userRoutes from './routes/userRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import paymentRoutes from './routes/paymentRoutes';
 import testimonialRoutes from './routes/testimonialRoutes';
+import settingsRoutes from './routes/settingsRoutes';
+import partnerRequestRoutes from './routes/partnerRequestRoutes';
 
 
 dotenv.config();
@@ -33,6 +35,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/partner-requests', partnerRequestRoutes);
 
 
 

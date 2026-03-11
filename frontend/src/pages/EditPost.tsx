@@ -222,7 +222,7 @@ const EditPost = () => {
                 placeholder="Le titre de votre récit..."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full text-5xl md:text-6xl font-black text-foreground placeholder-foreground-muted/30 focus:outline-none bg-transparent leading-[1.1] border-none p-0 transition-colors"
+                className="w-full text-5xl md:text-6xl font-black text-foreground focus:outline-none bg-transparent leading-[1.1] border-none p-0 transition-colors"
               />
               <div className="h-1.5 w-24 bg-primary rounded-full" />
             </div>

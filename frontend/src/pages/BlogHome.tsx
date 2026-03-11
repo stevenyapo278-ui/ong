@@ -172,7 +172,7 @@ const BlogHome = () => {
               <input
                 type="email"
                 placeholder="Votre adresse email"
-                className="w-full sm:min-w-[300px] px-8 py-4 md:py-5 bg-background/5 border-2 border-background/10 rounded-2xl text-background placeholder-background/30 focus:outline-none focus:border-primary transition-all font-medium"
+                className="w-full sm:min-w-[300px] px-8 py-4 md:py-5 bg-background/5 border-2 border-background/10 rounded-2xl text-background placeholder-background/60 focus:outline-none focus:border-primary transition-all font-medium"
               />
               <button className="w-full sm:w-auto px-10 py-4 md:py-5 bg-primary text-white font-black rounded-2xl shadow-xl shadow-primary/20 hover:bg-background hover:text-foreground transition-all transform hover:scale-105 active:scale-95 text-[10px] tracking-widest uppercase whitespace-nowrap">
                 M'abonner

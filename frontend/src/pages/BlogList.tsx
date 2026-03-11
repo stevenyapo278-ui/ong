@@ -80,7 +80,7 @@ const BlogList = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher un récit, un pays, une mission..."
-            className="w-full pl-12 pr-4 py-4 bg-background-alt border-2 border-border rounded-[20px] text-foreground placeholder-foreground-muted/40 focus:outline-none focus:border-primary focus:bg-background transition-all shadow-sm group-hover:shadow-md font-medium"
+            className="w-full pl-12 pr-4 py-4 bg-background-alt border-2 border-border rounded-[20px] text-foreground focus:outline-none focus:border-primary focus:bg-background transition-all shadow-sm group-hover:shadow-md font-medium"
           />
         </form>
 

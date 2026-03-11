@@ -216,7 +216,7 @@ const DonorsSpace = () => {
                                             <input 
                                                 type="number"
                                                 placeholder="Autre"
-                                                className="w-full h-full bg-transparent outline-none text-sm font-black text-foreground placeholder-foreground-muted/50"
+                                                className="w-full h-full bg-transparent outline-none text-sm font-black text-foreground"
                                                 value={customAmount}
                                                 onChange={(e) => { setCustomAmount(e.target.value); setAmount(0); }}
                                             />
@@ -233,7 +233,7 @@ const DonorsSpace = () => {
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
                                             placeholder="Ex: Jean Kouassi"
-                                            className="w-full h-14 px-6 bg-background border-2 border-border rounded-2xl outline-none focus:border-primary transition-all text-sm font-bold placeholder-foreground-muted/50"
+                                            className="w-full h-14 px-6 bg-background border-2 border-border rounded-2xl outline-none focus:border-primary transition-all text-sm font-bold"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -243,7 +243,7 @@ const DonorsSpace = () => {
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             placeholder="Ex: jean@email.com"
-                                            className="w-full h-14 px-6 bg-background border-2 border-border rounded-2xl outline-none focus:border-primary transition-all text-sm font-bold placeholder-foreground-muted/50"
+                                            className="w-full h-14 px-6 bg-background border-2 border-border rounded-2xl outline-none focus:border-primary transition-all text-sm font-bold"
                                         />
                                     </div>
                                 </div>

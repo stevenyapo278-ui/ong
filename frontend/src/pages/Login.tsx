@@ -69,7 +69,7 @@ const Login = () => {
                   id="email"
                   type="email"
                   required
-                  className="w-full pl-14 pr-6 py-4 bg-background-alt border-2 border-border rounded-2xl text-foreground font-bold placeholder-foreground-muted/30 focus:outline-none focus:border-primary focus:bg-background transition-all shadow-sm"
+                  className="w-full pl-14 pr-6 py-4 bg-background-alt border-2 border-border rounded-2xl text-foreground font-bold focus:outline-none focus:border-primary focus:bg-background transition-all shadow-sm"
                   placeholder="votre@ong.org"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -86,7 +86,7 @@ const Login = () => {
                   id="password"
                   type="password"
                   required
-                  className="w-full pl-14 pr-6 py-4 bg-background-alt border-2 border-border rounded-2xl text-foreground font-bold placeholder-foreground-muted/30 focus:outline-none focus:border-primary focus:bg-background transition-all shadow-sm"
+                  className="w-full pl-14 pr-6 py-4 bg-background-alt border-2 border-border rounded-2xl text-foreground font-bold focus:outline-none focus:border-primary focus:bg-background transition-all shadow-sm"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

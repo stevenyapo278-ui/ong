@@ -137,3 +137,21 @@ model Testimonial {
   updatedAt       DateTime @updatedAt
 }
 
+model GlobalSettings {
+  id              String   @id @default("global")
+  brochureUrl     String?
+  updatedAt       DateTime @updatedAt
+}
+
+model PartnerRequest {
+  id              String   @id @default(uuid())
+  organization    String
+  contactName     String
+  email           String
+  phone           String?
+  message         String?  @db.Text
+  status          String   @default("PENDING") // PENDING, CONTACTED, ARCHIVED
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+

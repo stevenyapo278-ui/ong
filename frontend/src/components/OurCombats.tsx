@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { ShieldCheck, Droplets, Target, HelpingHand, Stethoscope, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const CombatCard = ({ title, summary, points, icon: Icon, delay }: any) => {
+const CombatCard = ({ title, summary, points, icon: Icon, image, delay }: any) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -11,9 +11,13 @@ const CombatCard = ({ title, summary, points, icon: Icon, delay }: any) => {
       transition={{ duration: 0.6, delay }}
       className="group relative h-[500px] overflow-hidden rounded-[40px] bg-foreground flex flex-col justify-end p-8 md:p-12 hover:shadow-2xl transition-all border border-white/10"
     >
-      {/* Semi-transparent background pattern/gradient since images are skipped for now */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
-      <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity z-0 bg-primary/20" />
+      {/* Visual background */}
+      {image ? (
+          <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-90 grayscale-[30%] group-hover:grayscale-0" />
+      ) : (
+          <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity z-0 bg-primary/20" />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10" />
 
       <div className="relative z-20 space-y-6">
         <div className="flex items-center gap-3">
@@ -56,6 +60,7 @@ const OurCombats = () => {
     {
       title: "Culture de la Paix",
       icon: ShieldCheck,
+      image: "/assets/culture_paix_mission_1773213865603.png",
       summary: "Promouvoir une harmonie sociale durable à travers l'éducation et le respect mutuel.",
       points: [
           "Le respect des droits humains",
@@ -69,6 +74,7 @@ const OurCombats = () => {
     {
       title: "Développement Durable",
       icon: Droplets,
+      image: "/assets/developpement_durable_mission_1773213989000.png",
       summary: "Promouvoir le développement durable par la protection de l'environnement, l'utilisation responsable des ressources et une économie respectueuse de la nature.",
       points: [
           "Protection de l'environnement",
@@ -82,6 +88,7 @@ const OurCombats = () => {
     {
       title: "Entrepreneuriat",
       icon: Target,
+      image: "/assets/entrepreneuriat_mission_1773214144299.png",
       summary: "L'entreprenariat dans les villages ou quartiers permet de créer des emplois, soutenir l'économie locale et améliorer les conditions de vie tout en développant l'esprit d'initiative.",
       points: [
           "Renforcement des capacités professionnelles des PME",
@@ -94,6 +101,7 @@ const OurCombats = () => {
     {
       title: "Lutte contre la Pauvreté",
       icon: HelpingHand,
+      image: "/assets/lutte_pauvrete_mission_1773214244550.png",
       summary: "Lutter contre la précarité par l'éducation, l'employabilité et l'accès garanti aux services de base pour tous.",
       points: [
           "Amélioration de l'éducation",
@@ -107,6 +115,7 @@ const OurCombats = () => {
     {
       title: "Santé Communautaire",
       icon: Stethoscope,
+      image: "/assets/mission_sante.png",
       summary: "Garantir un accès universel aux soins de santé et promouvoir des modes de vie sains au sein des communautés.",
       points: [
           "Prévention & sensibilisation",

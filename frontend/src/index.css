@@ -47,6 +47,29 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   scroll-behavior: smooth;
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Global fluidity for interactive elements */
+a, button, input, textarea, select, .glass, .bg-background, .bg-background-alt, .border-border {
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Improved placeholder visibility */
+::placeholder {
+  color: var(--foreground-muted) !important;
+  opacity: 0.55 !important; /* Clearly visible but distinct from actual text */
+}
+
+input::placeholder, 
+textarea::placeholder {
+  color: var(--foreground-muted) !important;
+  opacity: 0.55 !important;
 }
 
 .rich-content h2 {

@@ -78,7 +78,7 @@ const ForgotPassword = () => {
                 id="email"
                 type="email"
                 required
-                className="w-full pl-14 pr-6 py-4 bg-background-alt border-2 border-border rounded-2xl text-foreground font-bold placeholder-foreground-muted/30 focus:outline-none focus:border-primary focus:bg-background transition-all"
+                className="w-full pl-14 pr-6 py-4 bg-background-alt border-2 border-border rounded-2xl text-foreground font-bold focus:outline-none focus:border-primary focus:bg-background transition-all"
                 placeholder="votre@ong.org"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

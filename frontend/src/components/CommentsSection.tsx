@@ -30,7 +30,7 @@ const CommentsSection: React.FC<Props> = ({ postId }) => {
             onChange={(e) => setAuthorName(e.target.value)}
             required
             placeholder="Votre nom"
-            className="px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground placeholder-foreground-muted/40 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+            className="px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
           />
           <input
             type="email"
@@ -38,7 +38,7 @@ const CommentsSection: React.FC<Props> = ({ postId }) => {
             onChange={(e) => setAuthorEmail(e.target.value)}
             required
             placeholder="Votre email"
-            className="px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground placeholder-foreground-muted/40 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+            className="px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
           />
         </div>
         <textarea
@@ -47,7 +47,7 @@ const CommentsSection: React.FC<Props> = ({ postId }) => {
           onChange={(e) => setContent(e.target.value)}
           required
           placeholder="Votre commentaire…"
-          className="w-full px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground placeholder-foreground-muted/40 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+          className="w-full px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
         />
         <div className="flex justify-end">
           <button

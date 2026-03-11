@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Search, FileEdit, Trash2, Clock, CheckCircle, AlertCircle, Hourglass, Eye, LayoutGrid, Users, Settings, ChevronRight, Loader2, Tag, Mail, Copy, Send, XCircle, Target as TargetIcon, MessageSquare } from 'lucide-react';
+import { Plus, Search, FileEdit, Trash2, Clock, CheckCircle, AlertCircle, Hourglass, Eye, LayoutGrid, Users, Settings, Loader2, Tag, Mail, Copy, Send, XCircle, Target as TargetIcon, MessageSquare, Building2 } from 'lucide-react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { formatPostType } from '../utils/post';
@@ -8,12 +8,14 @@ import UsersManager from '../components/UsersManager';
 import CategoriesManager from '../components/CategoriesManager';
 import NewsletterManager from '../components/NewsletterManager';
 import TestimonialsManager from '../components/TestimonialsManager';
+import SettingsManager from '../components/SettingsManager';
+import PartnerRequestsManager from '../components/PartnerRequestsManager';
 import { useOverlay } from '../context/OverlayContext';
 
 const Dashboard = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'posts' | 'users' | 'categories' | 'testimonials' | 'newsletter' | 'settings'>('posts');
+  const [activeTab, setActiveTab] = useState<'posts' | 'users' | 'categories' | 'testimonials' | 'newsletter' | 'requests' | 'settings'>('posts');
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'DRAFT' | 'PENDING' | 'PUBLISHED'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -182,6 +184,14 @@ const Dashboard = () => {
                 <Mail size={16} /> Newsletter
               </button>
             )}
+            {(user?.role === 'ADMIN' || user?.role === 'EDITOR') && (
+              <button
+                onClick={() => setActiveTab('requests')}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black uppercase tracking-widest transition-all ${activeTab === 'requests' ? 'bg-background text-primary shadow-xl shadow-foreground/5' : 'text-foreground-muted hover:text-foreground'}`}
+              >
+                <Building2 size={16} /> Demandes
+              </button>
+            )}
             <button
               onClick={() => setActiveTab('settings')}
               className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black uppercase tracking-widest transition-all ${activeTab === 'settings' ? 'bg-background text-primary shadow-xl shadow-foreground/5' : 'text-foreground-muted hover:text-foreground'}`}
@@ -295,7 +305,7 @@ const Dashboard = () => {
                       placeholder="Chercher dans les titres..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 bg-background-alt border-2 border-border rounded-2xl text-sm font-bold placeholder-foreground-muted/40 focus:outline-none focus:border-primary focus:bg-background text-foreground transition-all"
+                      className="w-full pl-12 pr-4 py-3 bg-background-alt border-2 border-border rounded-2xl text-sm font-bold focus:outline-none focus:border-primary focus:bg-background text-foreground transition-all"
                     />
                   </div>
 
@@ -307,7 +317,7 @@ const Dashboard = () => {
                       placeholder="Par rédacteur..."
                       value={authorSearch}
                       onChange={(e) => setAuthorSearch(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 bg-background-alt border-2 border-border rounded-2xl text-sm font-bold placeholder-foreground-muted/40 focus:outline-none focus:border-primary focus:bg-background text-foreground transition-all"
+                      className="w-full pl-12 pr-4 py-3 bg-background-alt border-2 border-border rounded-2xl text-sm font-bold focus:outline-none focus:border-primary focus:bg-background text-foreground transition-all"
                     />
                   </div>
 
@@ -530,15 +540,14 @@ const Dashboard = () => {
       )}
 
       {activeTab === 'settings' && (
-        <div className="bg-background p-16 rounded-[40px] border border-border shadow-sm text-center space-y-6 animate-in fade-in slide-in-from-bottom duration-500 transition-colors">
-          <div className="w-24 h-24 bg-primary/5 rounded-[40px] flex items-center justify-center text-primary mx-auto transition-colors">
-            <Settings size={48} className="animate-spin-slow" />
-          </div>
-          <h2 className="text-3xl font-black text-foreground tracking-tight transition-colors">Paramètres de Compte</h2>
-          <p className="text-foreground-muted font-medium max-w-sm mx-auto leading-relaxed transition-colors">Cette section est en cours de développement. Vous pourrez prochainement personnaliser votre profil et vos préférences de notification.</p>
-          <button onClick={() => setActiveTab('posts')} className="inline-flex items-center gap-2 text-primary font-black tracking-widest uppercase text-xs hover:translate-x-1 transition-transform">
-            RETOUR AU TABLEAU DE BORD <ChevronRight size={14} />
-          </button>
+        <div className="animate-in fade-in slide-in-from-bottom duration-500">
+          <SettingsManager />
+        </div>
+      )}
+
+      {activeTab === 'requests' && (user?.role === 'ADMIN' || user?.role === 'EDITOR') && (
+        <div className="animate-in fade-in slide-in-from-bottom duration-500">
+          <PartnerRequestsManager />
         </div>
       )}
     </div>

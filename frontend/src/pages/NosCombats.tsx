@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { ShieldCheck, Droplets, Target, HelpingHand, Stethoscope, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const CombatDetail = ({ title, summary, points, icon: Icon, index }: any) => {
+const CombatDetail = ({ title, summary, points, icon: Icon, image, index }: any) => {
   const isEven = index % 2 === 0;
   
   return (
@@ -10,14 +10,14 @@ const CombatDetail = ({ title, summary, points, icon: Icon, index }: any) => {
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 items-center py-20 border-b border-border last:border-0`}
+      className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 items-center py-24 border-b border-border last:border-0`}
     >
       <div className="flex-1 space-y-8">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
             <Icon size={32} />
           </div>
-          <h2 className="text-4xl font-black text-foreground">{title}</h2>
+          <h2 className="text-4xl md:text-5xl font-black text-foreground">{title}</h2>
         </div>
         
         <p className="text-xl text-foreground-muted leading-relaxed italic">
@@ -35,12 +35,20 @@ const CombatDetail = ({ title, summary, points, icon: Icon, index }: any) => {
       </div>
       
       <div className="flex-1 w-full">
-        <div className="aspect-video rounded-[40px] bg-foreground relative overflow-hidden group">
-            <div className="absolute inset-0 bg-primary/10 group-hover:bg-primary/5 transition-all" />
-            <div className="absolute inset-0 flex items-center justify-center">
-                <Icon size={80} className="text-white/20 group-hover:scale-110 transition-transform duration-500" />
-            </div>
-            {/* Placeholder for future images */}
+        <div className="relative aspect-[4/3] rounded-[40px] overflow-hidden group shadow-2xl border border-border/50">
+            {image ? (
+                <img 
+                    src={image} 
+                    alt={title} 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                />
+            ) : (
+                <div className="w-full h-full bg-foreground flex items-center justify-center">
+                    <Icon size={80} className="text-white/20 group-hover:scale-110 transition-transform duration-500" />
+                </div>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60" />
+            
             <div className="absolute bottom-8 left-8 right-8 p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
                 <p className="text-white font-black text-xs uppercase tracking-widest">Impact sur le terrain</p>
                 <p className="text-white/70 text-[10px] mt-1 uppercase tracking-widest">Cocody, Côte d'Ivoire</p>
@@ -56,6 +64,7 @@ const NosCombats = () => {
         {
           title: "Culture de la Paix",
           icon: ShieldCheck,
+          image: "/assets/culture_paix_mission_1773213865603.png",
           summary: "Promouvoir une harmonie sociale durable à travers l'éducation et le respect mutuel.",
           points: [
               "Le respect des droits humains",
@@ -69,6 +78,7 @@ const NosCombats = () => {
         {
           title: "Développement Durable",
           icon: Droplets,
+          image: "/assets/developpement_durable_mission_1773213989000.png",
           summary: "Promouvoir le développement durable par la protection de l'environnement, l'utilisation responsable des ressources et une économie respectueuse de la nature.",
           points: [
               "Protection de l'environnement",
@@ -82,7 +92,8 @@ const NosCombats = () => {
         {
           title: "Entrepreneuriat",
           icon: Target,
-          summary: "L'entreprenariat dans les villages ou quartiers permet de créer des emplois, soutenir l'économie locale et améliorer les conditions de vie tout en développant l'esprit d'initiative.",
+          image: "/assets/entrepreneuriat_mission_1773214144299.png",
+          summary: "L'entreprenariat dans les villages ou quartiers permet de créer des emplois, soutenir l'économie locale and améliorer les conditions de vie tout en développant l'esprit d'initiative.",
           points: [
               "Renforcement des capacités professionnelles des PME",
               "Assistance technique, conseil, Étude de faisabilité",
@@ -94,6 +105,7 @@ const NosCombats = () => {
         {
           title: "Lutte contre la Pauvreté",
           icon: HelpingHand,
+          image: "/assets/lutte_pauvrete_mission_1773214244550.png",
           summary: "Lutter contre la précarité par l'éducation, l'employabilité et l'accès garanti aux services de base pour tous.",
           points: [
               "Amélioration de l'éducation",
@@ -107,6 +119,7 @@ const NosCombats = () => {
         {
           title: "Santé Communautaire",
           icon: Stethoscope,
+          image: "/assets/mission_sante.png",
           summary: "Garantir un accès universel aux soins de santé et promouvoir des modes de vie sains au sein des communautés.",
           points: [
               "Prévention & sensibilisation",

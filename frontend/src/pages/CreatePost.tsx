@@ -156,7 +156,7 @@ const CreatePost = () => {
                 placeholder="Commencez par un titre fort..."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full text-6xl md:text-7xl font-black text-foreground placeholder-foreground-muted/30 focus:outline-none bg-transparent leading-[1.05] border-none p-0 tracking-tight transition-colors"
+                className="w-full text-6xl md:text-7xl font-black text-foreground focus:outline-none bg-transparent leading-[1.05] border-none p-0 tracking-tight transition-colors"
               />
               <div className="h-2 w-32 bg-primary rounded-full" />
             </div>

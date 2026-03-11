@@ -101,7 +101,7 @@ const ForceChangePassword = () => {
                 id="currentPassword"
                 type={showCurrent ? 'text' : 'password'}
                 required
-                className="w-full pl-14 pr-14 py-4 bg-background-alt border-2 border-border rounded-2xl text-foreground font-bold placeholder-foreground-muted/30 focus:outline-none focus:border-primary focus:bg-background transition-all shadow-sm"
+                className="w-full pl-14 pr-14 py-4 bg-background-alt border-2 border-border rounded-2xl text-foreground font-bold focus:outline-none focus:border-primary focus:bg-background transition-all shadow-sm"
                 placeholder="Votre mot de passe actuel"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
@@ -129,7 +129,7 @@ const ForceChangePassword = () => {
                 id="newPassword"
                 type={showNew ? 'text' : 'password'}
                 required
-                className="w-full pl-14 pr-14 py-4 bg-background-alt border-2 border-border rounded-2xl text-foreground font-bold placeholder-foreground-muted/30 focus:outline-none focus:border-primary focus:bg-background transition-all shadow-sm"
+                className="w-full pl-14 pr-14 py-4 bg-background-alt border-2 border-border rounded-2xl text-foreground font-bold focus:outline-none focus:border-primary focus:bg-background transition-all shadow-sm"
                 placeholder="Votre nouveau mot de passe"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
@@ -160,7 +160,7 @@ const ForceChangePassword = () => {
                 id="confirmPassword"
                 type={showConfirm ? 'text' : 'password'}
                 required
-                className="w-full pl-14 pr-14 py-4 bg-background-alt border-2 border-border rounded-2xl text-foreground font-bold placeholder-foreground-muted/30 focus:outline-none focus:border-primary focus:bg-background transition-all shadow-sm"
+                className="w-full pl-14 pr-14 py-4 bg-background-alt border-2 border-border rounded-2xl text-foreground font-bold focus:outline-none focus:border-primary focus:bg-background transition-all shadow-sm"
                 placeholder="Confirmez le mot de passe"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
