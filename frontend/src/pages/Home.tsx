@@ -8,6 +8,7 @@ import FAQ from '../components/FAQ';
 import OurCombats from '../components/OurCombats';
 import LatestPosts from '../components/LatestPosts';
 import TestimonialsSlider from '../components/TestimonialsSlider';
+import MarqueePosts from '../components/MarqueePosts';
 import SEO from '../components/SEO';
 
 const Home = () => {
@@ -38,7 +39,8 @@ const Home = () => {
             transition={{ duration: 0.8 }}
             className="max-w-3xl space-y-6 md:space-y-8"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 text-primary-foreground text-[10px] font-bold uppercase tracking-widest">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 text-white text-[10px] font-bold uppercase tracking-widest">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               Intervention en cours
             </div>
             
@@ -99,6 +101,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* ── 02.5 Scrolling Articles ── */}
+      <MarqueePosts />
 
       {/* ── 03. Story Section ── */}
       <section className="py-16 md:py-24 bg-background">

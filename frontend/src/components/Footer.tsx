@@ -105,6 +105,9 @@ const Footer = () => {
                                 <h4 className="text-[11px] font-black text-foreground uppercase tracking-[0.25em]">Vos Espaces</h4>
                                 <ul className="space-y-4">
                                     <li>
+                                        <button onClick={() => navigate('/actualites')} className="text-[13px] font-bold text-foreground-muted hover:text-primary transition-colors hover:translate-x-1 inline-block transform text-left">Blog & Actualités</button>
+                                    </li>
+                                    <li>
                                         <button onClick={() => navigate('/espace-donateur')} className="text-[13px] font-bold text-foreground-muted hover:text-primary transition-colors hover:translate-x-1 inline-block transform text-left">Espace donateur</button>
                                     </li>
                                     <li>
@@ -145,10 +148,19 @@ const Footer = () => {
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                             &copy; {new Date().getFullYear()} ONG BIEN VIVRE ICI. RÉCITS D'IMPACT EN DIRECT.
                         </p>
-                        <div className="flex gap-8 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                        <div className="flex flex-wrap justify-center gap-6 md:gap-8 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">
                             <button onClick={() => navigate('/plan-du-site')} className="hover:text-primary transition-colors">Plan du site</button>
                             <button onClick={() => navigate('/mentions-legales')} className="hover:text-primary transition-colors">Mentions Légales</button>
                             <button onClick={() => navigate('/politique-cookies')} className="hover:text-primary transition-colors">Politique Cookies</button>
+                            <a 
+                                href="https://wa.me/255758519080" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="hover:text-primary transition-colors flex items-center gap-2"
+                            >
+                                <span className="w-1 h-1 rounded-full bg-slate-300" />
+                                CONÇU PAR STEVEN YAPO
+                            </a>
                         </div>
                     </div>
                 </div>

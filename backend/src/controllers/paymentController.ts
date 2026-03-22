@@ -115,3 +115,42 @@ export const handleWebhook = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Internal server error during webhook processing" });
     }
 };
+
+export const getDonations = async (req: Request, res: Response) => {
+    try {
+        const { status, page = '1', pageSize = '20' } = req.query;
+        const skip = (parseInt(page as string) - 1) * parseInt(pageSize as string);
+        const take = parseInt(pageSize as string);
+
+        const where: any = {};
+        if (status && status !== 'all') {
+            where.status = status as string;
+        }
+
+        const [donations, total] = await Promise.all([
+            prisma.donation.findMany({
+                where,
+                orderBy: { createdAt: 'desc' },
+                skip,
+                take,
+            }),
+            prisma.donation.count({ where }),
+        ]);
+
+        const totalAmount = await prisma.donation.aggregate({
+            _sum: { amount: true },
+            where: { status: 'success' },
+        });
+
+        return res.status(200).json({
+            items: donations,
+            total,
+            page: parseInt(page as string),
+            totalPages: Math.ceil(total / take),
+            totalSuccessAmount: totalAmount._sum.amount || 0,
+        });
+    } catch (error: any) {
+        console.error('Error fetching donations:', error.message);
+        res.status(500).json({ message: 'Erreur lors de la récupération des dons.' });
+    }
+};

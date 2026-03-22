@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Search, FileEdit, Trash2, Clock, CheckCircle, AlertCircle, Hourglass, Eye, LayoutGrid, Users, Settings, Loader2, Tag, Mail, Copy, Send, XCircle, Target as TargetIcon, MessageSquare, Building2 } from 'lucide-react';
+import { Plus, Search, FileEdit, Trash2, Clock, CheckCircle, AlertCircle, Hourglass, Eye, LayoutGrid, Users, Settings, Loader2, Tag, Mail, Copy, Send, XCircle, Target as TargetIcon, MessageSquare, Building2, Heart } from 'lucide-react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { formatPostType } from '../utils/post';
@@ -10,12 +10,13 @@ import NewsletterManager from '../components/NewsletterManager';
 import TestimonialsManager from '../components/TestimonialsManager';
 import SettingsManager from '../components/SettingsManager';
 import PartnerRequestsManager from '../components/PartnerRequestsManager';
+import DonationsManager from '../components/DonationsManager';
 import { useOverlay } from '../context/OverlayContext';
 
 const Dashboard = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'posts' | 'users' | 'categories' | 'testimonials' | 'newsletter' | 'requests' | 'settings'>('posts');
+  const [activeTab, setActiveTab] = useState<'posts' | 'users' | 'categories' | 'testimonials' | 'newsletter' | 'requests' | 'donations' | 'settings'>('posts');
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'DRAFT' | 'PENDING' | 'PUBLISHED'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -190,6 +191,14 @@ const Dashboard = () => {
                 className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black uppercase tracking-widest transition-all ${activeTab === 'requests' ? 'bg-background text-primary shadow-xl shadow-foreground/5' : 'text-foreground-muted hover:text-foreground'}`}
               >
                 <Building2 size={16} /> Demandes
+              </button>
+            )}
+            {user?.role === 'ADMIN' && (
+              <button
+                onClick={() => setActiveTab('donations')}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black uppercase tracking-widest transition-all ${activeTab === 'donations' ? 'bg-background text-primary shadow-xl shadow-foreground/5' : 'text-foreground-muted hover:text-foreground'}`}
+              >
+                <Heart size={16} /> Dons
               </button>
             )}
             <button
@@ -548,6 +557,12 @@ const Dashboard = () => {
       {activeTab === 'requests' && (user?.role === 'ADMIN' || user?.role === 'EDITOR') && (
         <div className="animate-in fade-in slide-in-from-bottom duration-500">
           <PartnerRequestsManager />
+        </div>
+      )}
+
+      {activeTab === 'donations' && user?.role === 'ADMIN' && (
+        <div className="animate-in fade-in slide-in-from-bottom duration-500">
+          <DonationsManager />
         </div>
       )}
     </div>
