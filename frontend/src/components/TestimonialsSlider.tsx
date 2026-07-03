@@ -86,7 +86,7 @@ const TestimonialsSlider = () => {
                             className="flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-0 items-center min-h-[500px] md:min-h-[600px]"
                         >
                             {/* Text Block */}
-                            <div className="w-full lg:col-span-6 z-20 lg:-mr-20 order-2 lg:order-1">
+                            <div className="w-full lg:col-span-6 lg:row-start-1 z-20 lg:-mr-20 order-2 lg:order-1">
                                 <div className="bg-background-alt p-6 md:p-14 rounded-[30px] md:rounded-[40px] shadow-2xl border border-border space-y-6 md:space-y-8 relative">
                                     {/* Accent line */}
                                     <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-20 md:w-2 md:h-32 bg-secondary rounded-r-full" />
@@ -122,7 +122,7 @@ const TestimonialsSlider = () => {
                             </div>
 
                             {/* Image Block */}
-                            <div className="w-full lg:col-span-7 lg:col-start-6 z-10 aspect-[4/3] md:aspect-auto h-[300px] md:h-full order-1 lg:order-2">
+                            <div className="w-full lg:col-span-7 lg:col-start-6 lg:row-start-1 z-10 aspect-[4/3] lg:aspect-auto h-[300px] lg:h-full lg:self-stretch order-1 lg:order-2">
                                 <div className="w-full h-full rounded-[30px] md:rounded-[40px] overflow-hidden shadow-2xl relative">
                                     {current.image ? (
                                         <img 
