@@ -1,0 +1,42 @@
+# Dépendances Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build
+dist/
+build/
+
+# Variables d'environnement (NE JAMAIS COMMITTER)
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Uploads (fichiers utilisateurs)
+backend/uploads/
+
+# Cache
+.cache/
+.vite/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Prisma (garder le schema, pas le client généré)
+backend/node_modules/
