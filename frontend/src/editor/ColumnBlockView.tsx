@@ -10,8 +10,9 @@ export const ColumnBlockView = ({ node, editor, getPos, updateAttributes, delete
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Détection si la sélection est à l'intérieur de ce bloc
-  const isSelectionInside = editor.state.selection.from >= getPos() && 
-                            editor.state.selection.to <= getPos() + node.nodeSize;
+  const currentPos = typeof getPos === 'function' ? (getPos() ?? 0) : 0;
+  const isSelectionInside = editor.state.selection.from >= currentPos &&
+                            editor.state.selection.to <= currentPos + node.nodeSize;
 
   const template = node.attrs.template || '1fr 1fr';
   const resizeMode = node.attrs.resizeMode || 'linked';
@@ -139,31 +140,6 @@ export const ColumnBlockView = ({ node, editor, getPos, updateAttributes, delete
     }, 0);
   };
 
-  const removeColumn = () => {
-    if (node.childCount <= 1) {
-      deleteNode();
-      return;
-    }
-    const pos = getPos();
-    if (typeof pos !== 'number') return;
-
-    let lastChildOffset = 0;
-    node.forEach((_, offset) => { lastChildOffset = offset; });
-
-    const nextCount = node.childCount - 1;
-    const newTemplate = Array(nextCount).fill('1fr').join(' ');
-    const targetPos = pos + 1 + lastChildOffset;
-
-    setTimeout(() => {
-      editor.chain().focus()
-        .deleteRange({ from: targetPos, to: targetPos + node.lastChild!.nodeSize })
-        .updateAttributes('columnBlock', {
-          template: newTemplate,
-          cols: nextCount
-        })
-        .run();
-    }, 0);
-  };
 
   // Calcul des positions des handles pour l'affichage absolu
   const widths = getWidths();
