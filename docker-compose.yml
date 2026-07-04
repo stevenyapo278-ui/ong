@@ -63,8 +63,10 @@ services:
       - backend
     networks:
       - ong_network
+      - dokploy-network
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=dokploy-network"
       # Routeur HTTPS
       - "traefik.http.routers.ong-frontend.rule=Host(`${DOMAIN:-ongbienvivre.ci}`)"
       - "traefik.http.routers.ong-frontend.entrypoints=websecure"
@@ -79,7 +81,10 @@ services:
 networks:
   ong_network:
     driver: bridge
+  dokploy-network:
+    external: true
 
 volumes:
   postgres_data:
   uploads_data:
+
