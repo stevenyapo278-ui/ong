@@ -29,15 +29,12 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Installer seulement les dépendances de production
-RUN npm install --omit=dev
+# Installer toutes les dépendances (prisma CLI inclus pour migrate deploy)
+RUN npm install
 
-# Copier le client Prisma généré depuis le builder (évite de re-télécharger prisma@7)
+# Copier le client Prisma généré depuis le builder (binaires déjà compilés)
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
-# Copier le CLI Prisma (devDependency, absent de npm install --omit=dev)
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
 
 # Copier le build compilé
 COPY --from=builder /app/dist ./dist
@@ -48,5 +45,5 @@ RUN mkdir -p uploads
 # Exposer le port
 EXPOSE 5000
 
-# Migrations Prisma + démarrage du serveur
-CMD ["sh", "-c", "./node_modules/.bin/prisma migrate deploy && node dist/index.js"]
+# Lancer les migrations Prisma puis démarrer le serveur
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/index.js"]
