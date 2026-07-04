@@ -44,5 +44,5 @@ RUN mkdir -p uploads
 # Exposer le port
 EXPOSE 5000
 
-# Démarrer le serveur
-CMD ["node", "dist/index.js"]
+# Migrations Prisma + démarrage du serveur
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/index.js"]
