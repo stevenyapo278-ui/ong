@@ -37,8 +37,8 @@ services:
       SMTP_USER: ${SMTP_USER}
       SMTP_PASS: ${SMTP_PASS}
       SMTP_FROM: ${SMTP_FROM}
-      SITE_URL: ${SITE_URL:-https://ongbienvivre.ci}
-      FRONTEND_URL: ${FRONTEND_URL:-https://ongbienvivre.ci}
+      SITE_URL: ${SITE_URL:-https://ongbienvivreici.ci}
+      FRONTEND_URL: ${FRONTEND_URL:-https://ongbienvivreici.ci}
       GENIUSPAY_BASE_URL: ${GENIUSPAY_BASE_URL}
       GENIUSPAY_API_KEY: ${GENIUSPAY_API_KEY}
       GENIUSPAY_API_SECRET: ${GENIUSPAY_API_SECRET}
