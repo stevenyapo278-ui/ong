@@ -65,7 +65,7 @@ services:
       - ong_network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.ong-frontend.rule=Host(`${DOMAIN:-ongbienvivreici.org}`)"
+      - "traefik.http.routers.ong-frontend.rule=Host(`${DOMAIN:-ongbienvivre.ci}`)"
       - "traefik.http.routers.ong-frontend.entrypoints=websecure"
       - "traefik.http.routers.ong-frontend.tls.certresolver=letsencrypt"
       - "traefik.http.services.ong-frontend.loadbalancer.server.port=80"
