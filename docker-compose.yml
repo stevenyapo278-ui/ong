@@ -63,10 +63,14 @@ services:
       - backend
     networks:
       - ong_network
+      - dokploy-network
 
 networks:
   ong_network:
     driver: bridge
+  dokploy-network:
+    external: true
+
 
 volumes:
   postgres_data:
