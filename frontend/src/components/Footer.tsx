@@ -153,7 +153,7 @@ const Footer = () => {
                             <button onClick={() => navigate('/mentions-legales')} className="hover:text-primary transition-colors">Mentions Légales</button>
                             <button onClick={() => navigate('/politique-cookies')} className="hover:text-primary transition-colors">Politique Cookies</button>
                             <a 
-                                href="https://wa.me/255758519080" 
+                                href="https://wa.me/2250758519080" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 className="hover:text-primary transition-colors flex items-center gap-2"
